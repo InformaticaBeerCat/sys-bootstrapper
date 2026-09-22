@@ -8,9 +8,10 @@ interface ModalProps {
   onClose: () => void
   children: ReactNode
   footer?: (requestClose: (action?: () => void) => void) => ReactNode
+  size?: 'sm' | 'lg'
 }
 
-export function Modal({ title, onClose, children, footer }: ModalProps) {
+export function Modal({ title, onClose, children, footer, size = 'sm' }: ModalProps) {
   const [closing, setClosing] = useState(false)
   const closingRef = useRef(false)
 
@@ -35,7 +36,7 @@ export function Modal({ title, onClose, children, footer }: ModalProps) {
   return (
     <div className={`modal-overlay${closing ? ' modal-overlay-closing' : ''}`} onMouseDown={() => requestClose()}>
       <div
-        className={`modal-panel${closing ? ' modal-panel-closing' : ''}`}
+        className={`modal-panel${size === 'lg' ? ' modal-panel-lg' : ''}${closing ? ' modal-panel-closing' : ''}`}
         role="dialog"
         aria-modal="true"
         onMouseDown={(event) => event.stopPropagation()}

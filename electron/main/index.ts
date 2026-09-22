@@ -21,7 +21,8 @@ function createMainWindow(): void {
     icon: appIconPath,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      zoomFactor: 1.3
     }
   })
 

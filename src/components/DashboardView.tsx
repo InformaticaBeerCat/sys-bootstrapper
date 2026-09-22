@@ -14,7 +14,7 @@ export function DashboardView() {
   return (
     <div className="view">
       <div className="view-header">
-        <h1 className="view-title">Panel</h1>
+        <h1 className="view-title">Inicio</h1>
         <p className="view-description">Estado general de la herramienta.</p>
       </div>
 
