@@ -1,3 +1,4 @@
+import { registerMySQLHandlers } from '../databases/mysql/ipc'
 import { registerApacheHandlers } from '../http-servers/apache/ipc'
 import { registerConfigHandlers } from './config'
 import { registerDialogHandlers } from './dialog'
@@ -12,4 +13,5 @@ export function registerIpcHandlers(): void {
   registerConfigHandlers()
   registerDialogHandlers()
   registerApacheHandlers()
+  registerMySQLHandlers()
 }

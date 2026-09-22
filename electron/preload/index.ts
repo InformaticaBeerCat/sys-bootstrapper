@@ -1,4 +1,5 @@
 import { contextBridge } from 'electron'
+import { mysqlApi } from './databases/mysql'
 import { apacheApi } from './http-servers/apache'
 import { configApi } from './api/config'
 import { dialogApi } from './api/dialog'
@@ -13,7 +14,8 @@ import { dialogApi } from './api/dialog'
 const api = {
   config: configApi,
   dialog: dialogApi,
-  apache: apacheApi
+  apache: apacheApi,
+  mysql: mysqlApi
 }
 
 contextBridge.exposeInMainWorld('sysBootstrapper', api)

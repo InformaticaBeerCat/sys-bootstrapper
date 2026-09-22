@@ -1,3 +1,4 @@
+import { MYSQL_CHANNELS } from './databases/mysql'
 import { APACHE_CHANNELS } from './http-servers/apache'
 
 /**
@@ -15,5 +16,6 @@ export const IPC_CHANNELS = {
   dialog: {
     selectDirectory: 'dialog:select-directory'
   },
-  apache: APACHE_CHANNELS
+  apache: APACHE_CHANNELS,
+  mysql: MYSQL_CHANNELS
 } as const
