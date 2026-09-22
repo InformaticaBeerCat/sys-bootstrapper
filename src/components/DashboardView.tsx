@@ -13,7 +13,7 @@ export function DashboardView({ onNavigate }: DashboardViewProps) {
   const [config, setConfig] = useState<AppConfig | null>(null)
 
   useEffect(() => {
-    window.sysBootstrapper.getConfig().then(setConfig)
+    window.sysBootstrapper.config.get().then(setConfig)
   }, [])
 
   const ready = !!config?.workingDirectory

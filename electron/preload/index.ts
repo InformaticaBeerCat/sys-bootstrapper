@@ -1,12 +1,14 @@
-import { contextBridge, ipcRenderer } from 'electron'
-import { AppConfig, IPC } from '../shared/config'
+import { contextBridge } from 'electron'
+import { configApi } from './api/config'
+import { dialogApi } from './api/dialog'
 
+/**
+ * API expuesta al renderer, agrupada por dominio (misma estructura que main/ipc).
+ * Cada nuevo dominio agrega su `api/<dominio>.ts` y se suma acá.
+ */
 const api = {
-  getConfig: (): Promise<AppConfig> => ipcRenderer.invoke(IPC.configGet),
-  getConfigFilePath: (): Promise<string> => ipcRenderer.invoke(IPC.configGetPath),
-  setWorkingDirectory: (workingDirectory: string): Promise<AppConfig> =>
-    ipcRenderer.invoke(IPC.configSetWorkingDirectory, workingDirectory),
-  selectDirectory: (): Promise<string | null> => ipcRenderer.invoke(IPC.dialogSelectDirectory)
+  config: configApi,
+  dialog: dialogApi
 }
 
 contextBridge.exposeInMainWorld('sysBootstrapper', api)

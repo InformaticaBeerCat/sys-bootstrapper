@@ -9,10 +9,3 @@ export const DEFAULT_CONFIG: AppConfig = {
   workingDirectory: '',
   updatedAt: new Date(0).toISOString()
 }
-
-export const IPC = {
-  configGet: 'config:get',
-  configSetWorkingDirectory: 'config:set-working-directory',
-  configGetPath: 'config:get-path',
-  dialogSelectDirectory: 'dialog:select-directory'
-} as const

@@ -13,16 +13,16 @@ export function SettingsView() {
   const [showClearConfirm, setShowClearConfirm] = useState(false)
 
   useEffect(() => {
-    window.sysBootstrapper.getConfig().then(setConfig)
-    window.sysBootstrapper.getConfigFilePath().then(setConfigPath)
+    window.sysBootstrapper.config.get().then(setConfig)
+    window.sysBootstrapper.config.getPath().then(setConfigPath)
   }, [])
 
   async function handleSelectDirectory() {
-    const selected = await window.sysBootstrapper.selectDirectory()
+    const selected = await window.sysBootstrapper.dialog.selectDirectory()
     if (!selected) return
     setSaving(true)
     try {
-      const updated = await window.sysBootstrapper.setWorkingDirectory(selected)
+      const updated = await window.sysBootstrapper.config.setWorkingDirectory(selected)
       setConfig(updated)
       setSavedAt(Date.now())
       showToast('Directorio de trabajo actualizado.', 'success')
@@ -37,7 +37,7 @@ export function SettingsView() {
     setShowClearConfirm(false)
     setSaving(true)
     try {
-      const updated = await window.sysBootstrapper.setWorkingDirectory('')
+      const updated = await window.sysBootstrapper.config.setWorkingDirectory('')
       setConfig(updated)
       setSavedAt(Date.now())
       showToast('Se quitó el directorio de trabajo de la configuración.', 'success')
