@@ -1,5 +1,6 @@
 import { MYSQL_CHANNELS } from './databases/mysql'
 import { APACHE_CHANNELS } from './http-servers/apache'
+import { NGINX_CHANNELS } from './http-servers/nginx'
 
 /**
  * Punto único de agregación de canales IPC. Los dominios de app (config, dialog)
@@ -17,5 +18,6 @@ export const IPC_CHANNELS = {
     selectDirectory: 'dialog:select-directory'
   },
   apache: APACHE_CHANNELS,
+  nginx: NGINX_CHANNELS,
   mysql: MYSQL_CHANNELS
 } as const

@@ -2,15 +2,17 @@ import { useState } from 'react'
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import apacheconf from 'react-syntax-highlighter/dist/esm/languages/prism/apacheconf'
+import nginx from 'react-syntax-highlighter/dist/esm/languages/prism/nginx'
 import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql'
 import { IconCheck, IconCopy } from '../../icons'
 
 /**
- * Cada vista de código nueva (Nginx, Caddy, PostgreSQL, etc.) importa y registra
+ * Cada vista de código nueva (Caddy, PostgreSQL, etc.) importa y registra
  * su propio lenguaje Prism acá con una línea — mismo criterio de "una línea por tool"
  * que IPC_CHANNELS en shared/ipcChannels.ts.
  */
 SyntaxHighlighter.registerLanguage('apacheconf', apacheconf)
+SyntaxHighlighter.registerLanguage('nginx', nginx)
 SyntaxHighlighter.registerLanguage('sql', sql)
 
 interface CodeBlockProps {
