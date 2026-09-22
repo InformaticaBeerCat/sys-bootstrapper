@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { ApacheServer } from '../../../electron/shared/http-servers/apache'
 import { useToast } from '../../contexts/ToastContext'
+import { CodeBlock } from '../code/CodeBlock'
 import { ConfirmModal } from '../modals/ConfirmModal'
 import { Modal } from '../modals/Modal'
 import { generateApacheConf } from './generateApacheConf'
@@ -108,7 +109,7 @@ export function ApacheConfPreviewModal({ server, onClose }: ApacheConfPreviewMod
           <input className="text-input" type="text" value={filename} onChange={(event) => setFilename(event.target.value)} />
         </div>
 
-        <pre className="code-block">{content}</pre>
+        <CodeBlock code={content} language="apacheconf" />
       </Modal>
 
       {pendingOverwritePath && (

@@ -1,8 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faCheck,
   faCircleCheck,
   faCircleInfo,
   faCircleXmark,
+  faCopy,
   faDatabase,
   faEye,
   faFolder,
@@ -89,4 +91,12 @@ export function IconPlus(props: IconProps) {
 
 export function IconTable(props: IconProps) {
   return <FontAwesomeIcon icon={faTable} {...props} />
+}
+
+export function IconCopy(props: IconProps) {
+  return <FontAwesomeIcon icon={faCopy} {...props} />
+}
+
+export function IconCheck(props: IconProps) {
+  return <FontAwesomeIcon icon={faCheck} {...props} />
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { MySQLScript } from '../../../electron/shared/databases/mysql'
 import { useToast } from '../../contexts/ToastContext'
+import { CodeBlock } from '../code/CodeBlock'
 import { ConfirmModal } from '../modals/ConfirmModal'
 import { Modal } from '../modals/Modal'
 import { generateMySQLScript } from './generateMySQLScript'
@@ -108,7 +109,7 @@ export function MySQLScriptPreviewModal({ script, onClose }: MySQLScriptPreviewM
           <input className="text-input" type="text" value={filename} onChange={(event) => setFilename(event.target.value)} />
         </div>
 
-        <pre className="code-block">{content}</pre>
+        <CodeBlock code={content} language="sql" />
       </Modal>
 
       {pendingOverwritePath && (
