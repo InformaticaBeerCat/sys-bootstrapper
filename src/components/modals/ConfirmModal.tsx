@@ -21,16 +21,16 @@ export function ConfirmModal({
     <Modal
       title={title}
       onClose={onCancel}
-      footer={
+      footer={(requestClose) => (
         <>
-          <button type="button" className="btn" onClick={onCancel}>
+          <button type="button" className="btn" onClick={() => requestClose(onCancel)}>
             {cancelLabel}
           </button>
-          <button type="button" className="btn btn-primary" onClick={onConfirm}>
+          <button type="button" className="btn btn-primary" onClick={() => requestClose(onConfirm)}>
             {confirmLabel}
           </button>
         </>
-      }
+      )}
     >
       <p className="modal-message">{message}</p>
     </Modal>
