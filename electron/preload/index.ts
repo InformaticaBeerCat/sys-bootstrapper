@@ -1,4 +1,5 @@
 import { contextBridge } from 'electron'
+import { apacheApi } from './api/apache'
 import { configApi } from './api/config'
 import { dialogApi } from './api/dialog'
 
@@ -8,7 +9,8 @@ import { dialogApi } from './api/dialog'
  */
 const api = {
   config: configApi,
-  dialog: dialogApi
+  dialog: dialogApi,
+  apache: apacheApi
 }
 
 contextBridge.exposeInMainWorld('sysBootstrapper', api)

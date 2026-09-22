@@ -24,3 +24,14 @@ export function getAppDataDir(): string {
 export function getConfigFilePath(): string {
   return join(getAppDataDir(), 'config.json')
 }
+
+/**
+ * Carpeta de trabajo por defecto para archivos generados (visible, no oculta),
+ * usada cuando el usuario aún no eligió una en Configuración.
+ */
+export function getDefaultWorkingDirectory(): string {
+  const home = homedir()
+  return process.platform === 'win32'
+    ? join(home, 'Documents', APP_FOLDER_NAME)
+    : join(home, APP_FOLDER_NAME)
+}

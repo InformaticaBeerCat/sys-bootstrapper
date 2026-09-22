@@ -1,3 +1,4 @@
+import { registerApacheHandlers } from './apache'
 import { registerConfigHandlers } from './config'
 import { registerDialogHandlers } from './dialog'
 
@@ -8,4 +9,5 @@ import { registerDialogHandlers } from './dialog'
 export function registerIpcHandlers(): void {
   registerConfigHandlers()
   registerDialogHandlers()
+  registerApacheHandlers()
 }

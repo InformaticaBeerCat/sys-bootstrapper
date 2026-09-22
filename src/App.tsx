@@ -3,6 +3,7 @@ import { Sidebar, type ViewId } from './components/Sidebar'
 import { DashboardView } from './components/DashboardView'
 import { SettingsView } from './components/SettingsView'
 import { AboutView } from './components/AboutView'
+import { ApacheView } from './components/apache/ApacheView'
 import { ToolRecordsView } from './components/records/ToolRecordsView'
 import { findTool } from './data/tools'
 
@@ -14,6 +15,8 @@ function renderView(view: ViewId, onNavigate: (view: ViewId) => void) {
       return <AboutView />
     case 'settings':
       return <SettingsView />
+    case 'http-apache':
+      return <ApacheView />
     default: {
       const tool = findTool(view)
       return tool ? <ToolRecordsView tool={tool} /> : <DashboardView onNavigate={onNavigate} />
