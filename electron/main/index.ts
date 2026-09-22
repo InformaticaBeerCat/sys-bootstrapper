@@ -22,7 +22,7 @@ function createMainWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      zoomFactor: 1.3
+      zoomFactor: 1.1
     }
   })
 
