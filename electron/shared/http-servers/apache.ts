@@ -1,3 +1,14 @@
+export const APACHE_CHANNELS = {
+  getAll: 'apache:get-all',
+  add: 'apache:add',
+  update: 'apache:update',
+  removeAt: 'apache:remove',
+  getDefaultSaveDir: 'apache:get-default-save-dir',
+  saveConfFile: 'apache:save-conf-file',
+  fileExists: 'apache:file-exists',
+  openConfigDir: 'apache:open-config-dir'
+} as const
+
 export type ApacheSSLMode = 'certbot' | 'snakeoil' | 'custom'
 
 export interface ApacheServerInput {

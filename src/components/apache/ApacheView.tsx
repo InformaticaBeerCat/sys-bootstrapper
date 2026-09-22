@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SiApache, SiApacheHex } from '@icons-pack/react-simple-icons'
-import type { ApacheServer, ApacheServerInput } from '../../../electron/shared/apache'
+import type { ApacheServer, ApacheServerInput } from '../../../electron/shared/http-servers/apache'
 import { useToast } from '../../contexts/ToastContext'
 import { IconEdit, IconEye, IconFolderOpen, IconPlus, IconTable, IconTools, IconTrash } from '../../icons'
 import { ConfirmModal } from '../modals/ConfirmModal'

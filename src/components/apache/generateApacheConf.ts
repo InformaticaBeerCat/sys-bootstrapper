@@ -1,4 +1,4 @@
-import type { ApacheServerInput } from '../../../electron/shared/apache'
+import type { ApacheServerInput } from '../../../electron/shared/http-servers/apache'
 
 export function generateApacheConf(config: ApacheServerInput): string {
   const domains = config.domains

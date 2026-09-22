@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { ApacheServer } from '../../../electron/shared/apache'
+import type { ApacheServer } from '../../../electron/shared/http-servers/apache'
 import { useToast } from '../../contexts/ToastContext'
 import { ConfirmModal } from '../modals/ConfirmModal'
 import { Modal } from '../modals/Modal'

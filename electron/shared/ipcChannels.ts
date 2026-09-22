@@ -1,6 +1,10 @@
+import { APACHE_CHANNELS } from './http-servers/apache'
+
 /**
- * Canales IPC agrupados por dominio. Cada nuevo dominio (records, tools, etc.)
- * agrega su propio bloque acá en vez de mezclarse con los demás.
+ * Punto único de agregación de canales IPC. Los dominios de app (config, dialog)
+ * viven acá directo; cada tool (http-servers/<tool>, databases/<tool>, etc.) define
+ * su propio bloque de canales junto a sus tipos en `shared/<categoría>/<tool>.ts`
+ * y se suma en este objeto con una línea, para no mezclar todo en un solo archivo.
  */
 export const IPC_CHANNELS = {
   config: {
@@ -11,14 +15,5 @@ export const IPC_CHANNELS = {
   dialog: {
     selectDirectory: 'dialog:select-directory'
   },
-  apache: {
-    getAll: 'apache:get-all',
-    add: 'apache:add',
-    update: 'apache:update',
-    removeAt: 'apache:remove',
-    getDefaultSaveDir: 'apache:get-default-save-dir',
-    saveConfFile: 'apache:save-conf-file',
-    fileExists: 'apache:file-exists',
-    openConfigDir: 'apache:open-config-dir'
-  }
+  apache: APACHE_CHANNELS
 } as const

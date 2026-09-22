@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { ApacheServerInput, ApacheSSLMode } from '../../../electron/shared/apache'
+import type { ApacheServerInput, ApacheSSLMode } from '../../../electron/shared/http-servers/apache'
 import { Modal } from '../modals/Modal'
 
 const DOMAIN_REGEX = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/

@@ -1,11 +1,14 @@
 import { contextBridge } from 'electron'
-import { apacheApi } from './api/apache'
+import { apacheApi } from './http-servers/apache'
 import { configApi } from './api/config'
 import { dialogApi } from './api/dialog'
 
 /**
- * API expuesta al renderer, agrupada por dominio (misma estructura que main/ipc).
- * Cada nuevo dominio agrega su `api/<dominio>.ts` y se suma acá.
+ * API expuesta al renderer, agrupada por dominio (misma estructura que main/).
+ * Los dominios de app (config, dialog) viven en `api/<dominio>.ts`. Cada tool vive en
+ * `preload/<categoría>/<tool>.ts` (espejo de `main/<categoría>/<tool>/`) y se suma acá.
+ * El objeto expuesto en window.sysBootstrapper se mantiene plano (un key por tool),
+ * los nombres de tool ya son únicos entre categorías.
  */
 const api = {
   config: configApi,

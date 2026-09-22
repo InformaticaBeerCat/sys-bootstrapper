@@ -1,4 +1,4 @@
-import type { ApacheServer } from '../../../electron/shared/apache'
+import type { ApacheServer } from '../../../electron/shared/http-servers/apache'
 import { Modal } from '../modals/Modal'
 
 const SSL_LABELS: Record<ApacheServer['ssl'], string> = {

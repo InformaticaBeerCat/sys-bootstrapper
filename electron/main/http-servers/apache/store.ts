@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import type { ApacheServer } from '../shared/apache'
-import { getAppDataDir } from './paths'
+import type { ApacheServer } from '../../../shared/http-servers/apache'
+import { getAppDataDir } from '../../paths'
 
 function getApacheServersFilePath(): string {
   return join(getAppDataDir(), 'apache-servers.json')

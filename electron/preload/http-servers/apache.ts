@@ -5,7 +5,7 @@ import type {
   FileExistsParams,
   SaveConfFileParams,
   SaveConfFileResult
-} from '../../shared/apache'
+} from '../../shared/http-servers/apache'
 import { IPC_CHANNELS } from '../../shared/ipcChannels'
 
 export const apacheApi = {

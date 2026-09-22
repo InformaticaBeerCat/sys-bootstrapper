@@ -9,11 +9,11 @@ import type {
   FileExistsParams,
   SaveConfFileParams,
   SaveConfFileResult
-} from '../../shared/apache'
-import { IPC_CHANNELS } from '../../shared/ipcChannels'
-import { readApacheServers, writeApacheServers } from '../apacheStore'
-import { readConfig } from '../configStore'
-import { getDefaultWorkingDirectory } from '../paths'
+} from '../../../shared/http-servers/apache'
+import { IPC_CHANNELS } from '../../../shared/ipcChannels'
+import { readApacheServers, writeApacheServers } from './store'
+import { readConfig } from '../../configStore'
+import { getDefaultWorkingDirectory } from '../../paths'
 
 function sanitizeFolderName(name: string): string {
   return name.replace(/[^a-zA-Z0-9.-]+/g, '_')
