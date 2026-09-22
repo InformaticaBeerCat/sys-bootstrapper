@@ -767,6 +767,8 @@ select.text-input {
 }
 
 .btn-warning:hover {
+  background: linear-gradient(to bottom, #b8821c 0%, var(--warning) 45%, var(--warning-dark) 100%);
+  color: #fff;
   filter: brightness(1.08);
 }
 
@@ -779,6 +781,8 @@ select.text-input {
 }
 
 .btn-danger:hover {
+  background: linear-gradient(to bottom, #d64a54 0%, var(--danger) 45%, var(--danger-dark) 100%);
+  color: #fff;
   filter: brightness(1.08);
 }
 
