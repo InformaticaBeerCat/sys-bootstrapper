@@ -1,4 +1,5 @@
 import { IconDashboard, IconSettings } from '../icons'
+import logo from '../assets/logo.png'
 
 export type ViewId = 'dashboard' | 'settings'
 
@@ -16,7 +17,7 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
   return (
     <aside className="sidebar">
       <div className="brand">
-        <div className="brand-mark" />
+        <img className="brand-mark" src={logo} alt="BeerCat" />
         <div className="brand-text">
           <span className="brand-title">Sys Bootstrapper</span>
           <span className="brand-subtitle">sysadmin toolkit</span>

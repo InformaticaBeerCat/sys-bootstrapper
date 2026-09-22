@@ -32,10 +32,17 @@
     "appId": "com.astronautmarkus.sysbootstrapper",
     "productName": "Sys Bootstrapper",
     "directories": {
-      "output": "release"
+      "output": "release",
+      "buildResources": "build"
     },
     "files": [
       "out/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
     ],
     "mac": {
       "category": "public.app-category.developer-tools",

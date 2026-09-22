@@ -5,6 +5,10 @@ import { IPC } from '../shared/config'
 import { readConfig, writeConfig } from './configStore'
 import { getConfigFilePath } from './paths'
 
+const appIconPath = is.dev
+  ? join(__dirname, '../../build/icon.png')
+  : join(process.resourcesPath, 'icon.png')
+
 function createMainWindow(): void {
   const win = new BrowserWindow({
     width: 1040,
@@ -12,8 +16,9 @@ function createMainWindow(): void {
     minWidth: 760,
     minHeight: 520,
     show: false,
-    backgroundColor: '#1e1f22',
+    backgroundColor: '#141414',
     autoHideMenuBar: true,
+    icon: appIconPath,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false

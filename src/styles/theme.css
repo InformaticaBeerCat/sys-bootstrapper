@@ -1,32 +1,52 @@
 :root {
-  --bg: #1a1b1e;
-  --bg-elevated: #222327;
-  --bg-panel: #232428;
-  --bg-sidebar-top: #2a2b30;
-  --bg-sidebar-bottom: #1c1d20;
-  --bg-input: #1c1d20;
+  /* Paleta tomada del dashboard de BeerCat (admin_styles.css): grises carbón
+     neutros con el rojo de marca como único acento. */
+  color-scheme: dark;
 
-  --border: #34363c;
-  --border-soft: #2b2c31;
+  --dark-1: #2e2e2e;
+  --dark-2: #1e1e1e;
+  --dark-3: #141414;
+
+  --accent: #e03030;
+  --accent-dark: #c02020;
+  --accent-darker: #8e1010;
+  --accent-soft: rgba(224, 48, 48, 0.12);
+  --accent-text: #f0625a;
+
+  --bg: #141414;
+  --surface: #1e1e1e;
+  --surface-alt: #242424;
+  --surface-raised: #2e2e2e;
+  --input-bg: #171717;
+  --border: #2c2c2c;
+  --border-strong: #3d3d3d;
+
+  --text: #e8e8e8;
+  --text-soft: #bdbdbd;
+  --text-muted: #909090;
+
+  --success: #468838;
+  --success-dark: #347828;
+  --success-text: #5ab840;
+  --warning: #9a6a0e;
+  --warning-dark: #7a520a;
+  --warning-text: #e0b04a;
+  --danger: #c8323c;
+  --danger-dark: #8f1f28;
+  --danger-text: #ff7d88;
+  --info: #4a78a0;
+  --info-dark: #3a6082;
+  --info-text: #7aa8cc;
+
   --glass-top: rgba(255, 255, 255, 0.06);
   --glass-bottom: rgba(0, 0, 0, 0.18);
 
-  --red: #c8202c;
-  --red-strong: #e2323f;
-  --red-dim: #8f1620;
-  --red-glow: rgba(200, 32, 44, 0.35);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.65);
 
-  --success: #8fd19e;
-  --warning: #e0b25a;
-  --danger: var(--red-strong);
-  --info: #7c93b3;
-
-  --text: #e9e9ec;
-  --text-muted: #9a9ca3;
-  --text-faint: #6c6e75;
-
-  --radius-sm: 4px;
-  --radius-md: 6px;
   --font-ui: -apple-system, 'Segoe UI', 'Inter', Roboto, Arial, sans-serif;
   --font-mono: 'SF Mono', 'Consolas', 'Menlo', monospace;
 }
@@ -59,7 +79,7 @@ button {
 }
 
 ::selection {
-  background: var(--red-dim);
+  background: var(--accent-darker);
   color: #fff;
 }
 
@@ -73,11 +93,11 @@ button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--border-strong);
   border-radius: 10px;
   border: 2px solid var(--bg);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-faint);
+  background: var(--text-muted);
 }
