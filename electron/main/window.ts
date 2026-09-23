@@ -6,6 +6,12 @@ export const appIconPath = is.dev
   ? join(__dirname, '../../build/icon.png')
   : join(process.resourcesPath, 'icon.png')
 
+/**
+ * Ícono del Dock en dev. macOS 26 encierra en una placa gris los íconos que no son un squircle,
+ * así que en macOS se usa la versión con fondo propio (la app empaquetada la toma de su .icns).
+ */
+export const macDockIconPath = join(__dirname, '../../build/icon-mac.png')
+
 export function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
     title: 'SYS-BOOTSTRAPPER',

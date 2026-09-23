@@ -53,6 +53,7 @@
     "mac": {
       "category": "public.app-category.developer-tools",
       "target": "dmg",
+      "icon": "build/icon-mac.png",
       "extendInfo": {
         "NSLocalNetworkUsageDescription": "SYS-BOOTSTRAPPER lee la caché ARP, las direcciones MAC y prueba puertos de equipos de tu red local para el módulo de Red."
       }
