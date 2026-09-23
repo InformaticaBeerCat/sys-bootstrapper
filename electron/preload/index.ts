@@ -7,6 +7,7 @@ import { caddyApi } from './http-servers/caddy'
 import { nginxApi } from './http-servers/nginx'
 import { configApi } from './api/config'
 import { dialogApi } from './api/dialog'
+import { networkApi } from './api/network'
 
 /**
  * API expuesta al renderer, agrupada por dominio (misma estructura que main/).
@@ -18,6 +19,7 @@ import { dialogApi } from './api/dialog'
 const api = {
   config: configApi,
   dialog: dialogApi,
+  network: networkApi,
   apache: apacheApi,
   nginx: nginxApi,
   caddy: caddyApi,

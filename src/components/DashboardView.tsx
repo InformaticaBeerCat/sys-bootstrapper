@@ -1,6 +1,7 @@
 import type { AppConfig } from '../../electron/shared/config'
 import { IconAlert, IconCheckCircle, IconDatabase, IconFolder, IconGlobe, IconServer, IconTable } from '../icons'
 import { ALL_TOOLS, DATABASES, HTTP_SERVERS } from '../data/tools'
+import { NetworkStatusCards } from './network/NetworkStatusCards'
 import type { ViewId } from './Sidebar'
 import logo from '../assets/logo.png'
 
@@ -96,6 +97,9 @@ export function DashboardView({ config, onNavigate }: DashboardViewProps) {
           <div className="card-hint">{ready ? config?.workingDirectory : 'Configúralo para empezar'}</div>
         </div>
       </div>
+
+      <div className="section-title">Red</div>
+      <NetworkStatusCards />
 
       <div className="section-title">Accesos rápidos</div>
       <div className="tool-tiles">

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faArrowsRotate,
   faCheck,
   faCircleCheck,
   faCircleInfo,
@@ -13,10 +14,12 @@ import {
   faGear,
   faGlobe,
   faLink,
+  faNetworkWired,
   faPenToSquare,
   faPlus,
   faScrewdriverWrench,
   faServer,
+  faShieldHalved,
   faTable,
   faTrash,
   faTriangleExclamation
@@ -104,4 +107,16 @@ export function IconCheck(props: IconProps) {
 
 export function IconLink(props: IconProps) {
   return <FontAwesomeIcon icon={faLink} {...props} />
+}
+
+export function IconNetwork(props: IconProps) {
+  return <FontAwesomeIcon icon={faNetworkWired} {...props} />
+}
+
+export function IconRefresh(props: IconProps) {
+  return <FontAwesomeIcon icon={faArrowsRotate} {...props} />
+}
+
+export function IconShield(props: IconProps) {
+  return <FontAwesomeIcon icon={faShieldHalved} {...props} />
 }

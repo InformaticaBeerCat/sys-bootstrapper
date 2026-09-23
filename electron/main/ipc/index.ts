@@ -6,6 +6,7 @@ import { registerCaddyHandlers } from '../http-servers/caddy/ipc'
 import { registerNginxHandlers } from '../http-servers/nginx/ipc'
 import { registerConfigHandlers } from './config'
 import { registerDialogHandlers } from './dialog'
+import { registerNetworkHandlers } from './network'
 
 /**
  * Punto único de registro de handlers IPC. Los dominios de app (config, dialog)
@@ -16,6 +17,7 @@ import { registerDialogHandlers } from './dialog'
 export function registerIpcHandlers(): void {
   registerConfigHandlers()
   registerDialogHandlers()
+  registerNetworkHandlers()
   registerApacheHandlers()
   registerNginxHandlers()
   registerCaddyHandlers()

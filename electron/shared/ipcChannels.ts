@@ -21,6 +21,10 @@ export const IPC_CHANNELS = {
   dialog: {
     selectDirectory: 'dialog:select-directory'
   },
+  network: {
+    getPrivateIp: 'network:get-private-ip',
+    getPublicIp: 'network:get-public-ip'
+  },
   apache: APACHE_CHANNELS,
   nginx: NGINX_CHANNELS,
   caddy: CADDY_CHANNELS,
