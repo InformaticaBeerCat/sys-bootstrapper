@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { SiMongodb, SiMongodbHex } from '@icons-pack/react-simple-icons'
 import type { MongoDBScript, MongoDBScriptInput } from '../../../electron/shared/databases/mongodb'
 import { useToast } from '../../contexts/ToastContext'
-import { IconEdit, IconEye, IconFolderOpen, IconPlus, IconTable, IconTools, IconTrash } from '../../icons'
+import { IconEdit, IconEye, IconFolderOpen, IconLink, IconPlus, IconTable, IconTools, IconTrash } from '../../icons'
 import { ConfirmModal } from '../modals/ConfirmModal'
 import { MongoDBFormModal } from './MongoDBFormModal'
 import { MongoDBScriptPreviewModal } from './MongoDBScriptPreviewModal'
 import { MongoDBShowModal } from './MongoDBShowModal'
+import { MongoDBUriModal } from './MongoDBUriModal'
 
 type FormState = { mode: 'create' } | { mode: 'edit'; script: MongoDBScript }
 
@@ -20,6 +21,7 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
   const [formState, setFormState] = useState<FormState | null>(null)
   const [showScript, setShowScript] = useState<MongoDBScript | null>(null)
   const [sqlScript, setSqlScript] = useState<MongoDBScript | null>(null)
+  const [uriScript, setUriScript] = useState<MongoDBScript | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<MongoDBScript | null>(null)
 
   async function handleSave(values: MongoDBScriptInput) {
@@ -135,6 +137,10 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
                             <IconTools />
                             Generar .js
                           </button>
+                          <button type="button" className="btn btn-xs" onClick={() => setUriScript(script)}>
+                            <IconLink />
+                            Generar URI
+                          </button>
                           <button
                             type="button"
                             className="btn btn-danger btn-xs"
@@ -166,6 +172,8 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
       {showScript && <MongoDBShowModal script={showScript} onClose={() => setShowScript(null)} />}
 
       {sqlScript && <MongoDBScriptPreviewModal script={sqlScript} onClose={() => setSqlScript(null)} />}
+
+      {uriScript && <MongoDBUriModal script={uriScript} onClose={() => setUriScript(null)} />}
 
       {deleteTarget && (
         <ConfirmModal

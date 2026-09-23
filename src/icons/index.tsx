@@ -12,6 +12,7 @@ import {
   faGaugeHigh,
   faGear,
   faGlobe,
+  faLink,
   faPenToSquare,
   faPlus,
   faScrewdriverWrench,
@@ -99,4 +100,8 @@ export function IconCopy(props: IconProps) {
 
 export function IconCheck(props: IconProps) {
   return <FontAwesomeIcon icon={faCheck} {...props} />
+}
+
+export function IconLink(props: IconProps) {
+  return <FontAwesomeIcon icon={faLink} {...props} />
 }

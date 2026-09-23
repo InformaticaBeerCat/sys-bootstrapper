@@ -1,4 +1,5 @@
 import type { MongoDBScriptInput } from '../../../electron/shared/databases/mongodb'
+import { buildMongoDBUri } from './buildMongoDBUri'
 
 function parseRoles(roles: string): string[] {
   return roles
@@ -72,8 +73,17 @@ export function generateMongoDBScript(config: MongoDBScriptInput): string {
 
   js += `})();\n\n`
 
-  js += `// Cadena de conexión sugerida para la aplicación (ajusta host:puerto según el despliegue):\n`
-  js += `// mongodb://${encodeURIComponent(userName)}:<password>@localhost:27017/${dbName}?authSource=${authDb}\n`
+  const suggestedUri = buildMongoDBUri({
+    userName,
+    userPassword: config.userPassword,
+    authDb,
+    dbName,
+    hosts: 'localhost:27017',
+    scheme: 'mongodb'
+  })
+  js += `// Cadena de conexión sugerida para la aplicación (ajusta host:puerto según el despliegue;\n`
+  js += `// usa "Generar URI" para armar variantes con replica set, mongodb+srv o TLS):\n`
+  js += `// ${suggestedUri}\n`
 
   return js
 }
