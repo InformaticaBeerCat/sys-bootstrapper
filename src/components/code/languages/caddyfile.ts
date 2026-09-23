@@ -3,8 +3,13 @@
  * así que se define acá una gramática mínima (mismo formato que las de
  * refractor: una función que recibe la instancia de Prism y le agrega
  * `Prism.languages.caddyfile`).
+ *
+ * `refractor.register()` exige que la función tenga `displayName` (usa esa
+ * propiedad, no el nombre pasado a `registerLanguage`, para saber bajo qué
+ * clave registrarla) — sin esto lanza `Expected function for syntax` al
+ * cargar el módulo y tira abajo toda la app antes de que React monte nada.
  */
-export default function caddyfile(Prism: any): void {
+function caddyfile(Prism: any): void {
   Prism.languages.caddyfile = {
     comment: /#.*/,
     string: {
@@ -27,3 +32,8 @@ export default function caddyfile(Prism: any): void {
     }
   }
 }
+
+caddyfile.displayName = 'caddyfile'
+caddyfile.aliases = []
+
+export default caddyfile
