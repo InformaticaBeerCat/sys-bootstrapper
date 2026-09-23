@@ -10,7 +10,7 @@ export function AboutView() {
       <div className="tool-header">
         <img className="about-logo" src={logo} alt="BeerCat" />
         <div>
-          <h1 className="view-title">Sys Bootstrapper</h1>
+          <h1 className="view-title">SYS-BOOTSTRAPPER</h1>
           <p className="view-description">
             La navaja suiza de BeerCat para sysadmins: configuraciones y utilidades de uso frecuente, todas en un
             mismo lugar.
@@ -53,7 +53,7 @@ export function AboutView() {
         </div>
       </div>
 
-      <p className="about-footer">Sys Bootstrapper v0.1.0 · Uso interno BeerCat</p>
+      <p className="about-footer">SYS-BOOTSTRAPPER v0.1.0 · Uso interno BeerCat</p>
     </div>
   )
 }

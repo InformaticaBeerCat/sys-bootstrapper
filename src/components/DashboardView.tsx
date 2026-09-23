@@ -25,7 +25,7 @@ export function DashboardView({ onNavigate }: DashboardViewProps) {
         <div className="dash-welcome-info">
           <img className="dash-welcome-mascot" src={logo} alt="BeerCat" />
           <div>
-            <h2>¡Bienvenido a Sys Bootstrapper!</h2>
+            <h2>¡Bienvenido a SYS-BOOTSTRAPPER!</h2>
             <p>Tu navaja suiza para configurar servidores y bases de datos, todo desde un mismo lugar.</p>
           </div>
         </div>

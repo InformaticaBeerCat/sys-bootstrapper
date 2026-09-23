@@ -73,7 +73,7 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
       <div className="brand">
         <img className="brand-mark" src={logo} alt="BeerCat" />
         <div className="brand-text">
-          <span className="brand-title">Sys Bootstrapper</span>
+          <span className="brand-title">SYS-BOOTSTRAPPER</span>
           <span className="brand-subtitle">sysadmin toolkit</span>
         </div>
       </div>

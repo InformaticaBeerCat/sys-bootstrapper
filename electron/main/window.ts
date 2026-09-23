@@ -8,6 +8,7 @@ export const appIconPath = is.dev
 
 export function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
+    title: 'SYS-BOOTSTRAPPER',
     width: 1040,
     height: 680,
     minWidth: 760,
