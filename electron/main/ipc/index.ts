@@ -1,5 +1,6 @@
 import { registerMySQLHandlers } from '../databases/mysql/ipc'
 import { registerApacheHandlers } from '../http-servers/apache/ipc'
+import { registerCaddyHandlers } from '../http-servers/caddy/ipc'
 import { registerNginxHandlers } from '../http-servers/nginx/ipc'
 import { registerConfigHandlers } from './config'
 import { registerDialogHandlers } from './dialog'
@@ -15,5 +16,6 @@ export function registerIpcHandlers(): void {
   registerDialogHandlers()
   registerApacheHandlers()
   registerNginxHandlers()
+  registerCaddyHandlers()
   registerMySQLHandlers()
 }

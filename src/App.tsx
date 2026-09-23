@@ -5,6 +5,7 @@ import { SettingsView } from './components/SettingsView'
 import { AboutView } from './components/AboutView'
 import { ApacheView } from './components/apache/ApacheView'
 import { NginxView } from './components/nginx/NginxView'
+import { CaddyView } from './components/caddy/CaddyView'
 import { MySQLView } from './components/mysql/MySQLView'
 import { ToolRecordsView } from './components/records/ToolRecordsView'
 import { findTool } from './data/tools'
@@ -21,6 +22,8 @@ function renderView(view: ViewId, onNavigate: (view: ViewId) => void) {
       return <ApacheView />
     case 'http-nginx':
       return <NginxView />
+    case 'http-caddy':
+      return <CaddyView />
     case 'db-mysql':
       return <MySQLView />
     default: {

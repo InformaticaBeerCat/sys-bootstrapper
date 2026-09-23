@@ -1,6 +1,7 @@
 import { contextBridge } from 'electron'
 import { mysqlApi } from './databases/mysql'
 import { apacheApi } from './http-servers/apache'
+import { caddyApi } from './http-servers/caddy'
 import { nginxApi } from './http-servers/nginx'
 import { configApi } from './api/config'
 import { dialogApi } from './api/dialog'
@@ -17,6 +18,7 @@ const api = {
   dialog: dialogApi,
   apache: apacheApi,
   nginx: nginxApi,
+  caddy: caddyApi,
   mysql: mysqlApi
 }
 

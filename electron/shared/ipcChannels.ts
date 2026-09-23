@@ -1,5 +1,6 @@
 import { MYSQL_CHANNELS } from './databases/mysql'
 import { APACHE_CHANNELS } from './http-servers/apache'
+import { CADDY_CHANNELS } from './http-servers/caddy'
 import { NGINX_CHANNELS } from './http-servers/nginx'
 
 /**
@@ -19,5 +20,6 @@ export const IPC_CHANNELS = {
   },
   apache: APACHE_CHANNELS,
   nginx: NGINX_CHANNELS,
+  caddy: CADDY_CHANNELS,
   mysql: MYSQL_CHANNELS
 } as const
