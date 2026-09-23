@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { PostgreSQLPrivilegePreset, PostgreSQLScriptInput } from '../../../electron/shared/databases/postgresql'
+import { useI18n } from '../../contexts/I18nContext'
 import { Modal } from '../modals/Modal'
 import { generatePostgreSQLPassword } from './generatePostgreSQLPassword'
 
@@ -35,6 +36,7 @@ interface PostgreSQLFormModalProps {
 }
 
 export function PostgreSQLFormModal({ mode, initialValues, onCancel, onSave }: PostgreSQLFormModalProps) {
+  const { t } = useI18n()
   const [values, setValues] = useState<PostgreSQLScriptInput>(initialValues ?? EMPTY_VALUES)
   const [hostMode, setHostMode] = useState<HostMode>(detectHostMode((initialValues ?? EMPTY_VALUES).allowedHost))
   const [showPassword, setShowPassword] = useState(false)
@@ -63,18 +65,18 @@ export function PostgreSQLFormModal({ mode, initialValues, onCancel, onSave }: P
     !values.userPassword.trim() ||
     !values.privileges.trim() ||
     !values.allowedHost.trim()
-      ? 'Todos los campos son obligatorios.'
+      ? t.database.allRequired
       : null
 
   return (
     <Modal
-      title={mode === 'create' ? 'Nuevo script PostgreSQL' : 'Editar script PostgreSQL'}
+      title={mode === 'create' ? t.database.newTitle('PostgreSQL') : t.database.editTitle('PostgreSQL')}
       onClose={onCancel}
       size="lg"
       footer={(requestClose) => (
         <>
           <button type="button" className="btn" onClick={() => requestClose(onCancel)}>
-            Cancelar
+            {t.common.cancel}
           </button>
           <button
             type="button"
@@ -82,28 +84,28 @@ export function PostgreSQLFormModal({ mode, initialValues, onCancel, onSave }: P
             disabled={!!error}
             onClick={() => requestClose(() => onSave(values))}
           >
-            {mode === 'create' ? 'Crear' : 'Guardar cambios'}
+            {mode === 'create' ? t.common.create : t.common.saveChanges}
           </button>
         </>
       )}
     >
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Nombre de la base de datos</label>
+          <label className="form-label">{t.database.dbNameInput}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="ej: mi_programa_produccion"
+            placeholder={t.database.dbNamePlaceholder}
             value={values.dbName}
             onChange={(event) => update('dbName', event.target.value)}
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Usuario (rol)</label>
+          <label className="form-label">{t.postgresql.userRole}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="ej: usuario_app, admin, lector"
+            placeholder={t.database.userPlaceholder}
             value={values.userName}
             onChange={(event) => update('userName', event.target.value)}
           />
@@ -112,24 +114,24 @@ export function PostgreSQLFormModal({ mode, initialValues, onCancel, onSave }: P
 
       <div className="form-row form-row-1">
         <div className="form-group">
-          <label className="form-label">Contraseña</label>
+          <label className="form-label">{t.database.password}</label>
           <div className="field-row">
             <input
               className="text-input"
               type={showPassword ? 'text' : 'password'}
-              placeholder="Contraseña segura para el usuario"
+              placeholder={t.database.passwordPlaceholder}
               value={values.userPassword}
               onChange={(event) => update('userPassword', event.target.value)}
             />
             <button type="button" className="btn btn-sm" onClick={() => setShowPassword((v) => !v)} tabIndex={-1}>
-              {showPassword ? 'Ocultar' : 'Mostrar'}
+              {showPassword ? t.common.hide : t.common.show}
             </button>
             <button
               type="button"
               className="btn btn-primary btn-sm"
               onClick={() => update('userPassword', generatePostgreSQLPassword(20))}
             >
-              Generar segura
+              {t.database.generatePassword}
             </button>
           </div>
         </div>
@@ -137,24 +139,24 @@ export function PostgreSQLFormModal({ mode, initialValues, onCancel, onSave }: P
 
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Preset de privilegios</label>
+          <label className="form-label">{t.database.privilegesPreset}</label>
           <select
             className="text-input"
             value={values.preset}
             onChange={(event) => update('preset', event.target.value as PostgreSQLPrivilegePreset)}
           >
-            <option value="personalizado">personalizado</option>
-            <option value="produccion">producción (sin ser owner)</option>
-            <option value="desarrollo">desarrollo (owner, control total)</option>
-            <option value="solo_lectura">solo_lectura</option>
+            <option value="personalizado">{t.database.presets.personalizado}</option>
+            <option value="produccion">{t.postgresql.presetOptions.produccion}</option>
+            <option value="desarrollo">{t.postgresql.presetOptions.desarrollo}</option>
+            <option value="solo_lectura">{t.database.presets.solo_lectura}</option>
           </select>
         </div>
         <div className="form-group">
-          <label className="form-label">Privilegios sobre tablas</label>
+          <label className="form-label">{t.postgresql.tablePrivilegesInput}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="Ej: SELECT, INSERT, UPDATE, DELETE"
+            placeholder={t.database.privilegesPlaceholder}
             value={values.privileges}
             onChange={(event) => update('privileges', event.target.value)}
           />
@@ -163,17 +165,17 @@ export function PostgreSQLFormModal({ mode, initialValues, onCancel, onSave }: P
 
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Conexiones permitidas (pg_hba.conf)</label>
+          <label className="form-label">{t.postgresql.allowedConnectionsInput}</label>
           <select className="text-input" value={hostMode} onChange={(event) => handleHostModeChange(event.target.value as HostMode)}>
-            <option value="local">solo localhost (127.0.0.1/32)</option>
-            <option value="todas">todas las IPs (0.0.0.0/0)</option>
-            <option value="custom">personalizado (CIDR)</option>
+            <option value="local">{t.postgresql.hostLocal}</option>
+            <option value="todas">{t.postgresql.hostAll}</option>
+            <option value="custom">{t.postgresql.hostCustom}</option>
           </select>
           {hostMode === 'custom' && (
             <input
               className="text-input"
               type="text"
-              placeholder="Ej: 192.168.1.0/24"
+              placeholder={t.postgresql.hostPlaceholder}
               value={values.allowedHost}
               onChange={(event) => update('allowedHost', event.target.value)}
               style={{ marginTop: 8 }}
@@ -181,9 +183,9 @@ export function PostgreSQLFormModal({ mode, initialValues, onCancel, onSave }: P
           )}
         </div>
         <div className="form-group">
-          <label className="form-label">Codificación (encoding)</label>
+          <label className="form-label">{t.postgresql.encodingInput}</label>
           <select className="text-input" value={values.encoding} onChange={(event) => update('encoding', event.target.value)}>
-            <option value="UTF8">UTF8 (recomendado)</option>
+            <option value="UTF8">{t.postgresql.utf8}</option>
             <option value="LATIN1">LATIN1</option>
             <option value="SQL_ASCII">SQL_ASCII</option>
             <option value="WIN1252">WIN1252</option>

@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import type { AppConfig } from '../../shared/config'
+import type { AppConfig, Locale } from '../../shared/config'
 import { IPC_CHANNELS } from '../../shared/ipcChannels'
 
 export const configApi = {
@@ -8,5 +8,6 @@ export const configApi = {
   getDefaultWorkingDirectory: (): Promise<string> =>
     ipcRenderer.invoke(IPC_CHANNELS.config.getDefaultWorkingDirectory),
   setWorkingDirectory: (workingDirectory: string): Promise<AppConfig> =>
-    ipcRenderer.invoke(IPC_CHANNELS.config.setWorkingDirectory, workingDirectory)
+    ipcRenderer.invoke(IPC_CHANNELS.config.setWorkingDirectory, workingDirectory),
+  setLanguage: (language: Locale): Promise<AppConfig> => ipcRenderer.invoke(IPC_CHANNELS.config.setLanguage, language)
 }

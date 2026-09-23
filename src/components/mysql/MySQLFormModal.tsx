@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { MySQLPrivilegePreset, MySQLScriptInput } from '../../../electron/shared/databases/mysql'
+import { useI18n } from '../../contexts/I18nContext'
 import { Modal } from '../modals/Modal'
 import { generateMySQLPassword } from './generateMySQLPassword'
 
@@ -34,6 +35,7 @@ interface MySQLFormModalProps {
 }
 
 export function MySQLFormModal({ mode, initialValues, onCancel, onSave }: MySQLFormModalProps) {
+  const { t } = useI18n()
   const [values, setValues] = useState<MySQLScriptInput>(initialValues ?? EMPTY_VALUES)
   const [hostMode, setHostMode] = useState<HostMode>(detectHostMode((initialValues ?? EMPTY_VALUES).host))
   const [showPassword, setShowPassword] = useState(false)
@@ -56,18 +58,18 @@ export function MySQLFormModal({ mode, initialValues, onCancel, onSave }: MySQLF
   }
 
   const error = !values.dbName.trim() || !values.userName.trim() || !values.userPassword.trim() || !values.privileges.trim() || !values.host.trim()
-    ? 'Todos los campos son obligatorios.'
+    ? t.database.allRequired
     : null
 
   return (
     <Modal
-      title={mode === 'create' ? 'Nuevo script MySQL' : 'Editar script MySQL'}
+      title={mode === 'create' ? t.database.newTitle('MySQL') : t.database.editTitle('MySQL')}
       onClose={onCancel}
       size="lg"
       footer={(requestClose) => (
         <>
           <button type="button" className="btn" onClick={() => requestClose(onCancel)}>
-            Cancelar
+            {t.common.cancel}
           </button>
           <button
             type="button"
@@ -75,28 +77,28 @@ export function MySQLFormModal({ mode, initialValues, onCancel, onSave }: MySQLF
             disabled={!!error}
             onClick={() => requestClose(() => onSave(values))}
           >
-            {mode === 'create' ? 'Crear' : 'Guardar cambios'}
+            {mode === 'create' ? t.common.create : t.common.saveChanges}
           </button>
         </>
       )}
     >
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Nombre de la base de datos</label>
+          <label className="form-label">{t.database.dbNameInput}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="ej: mi_programa_produccion"
+            placeholder={t.database.dbNamePlaceholder}
             value={values.dbName}
             onChange={(event) => update('dbName', event.target.value)}
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Usuario</label>
+          <label className="form-label">{t.database.user}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="ej: usuario_app, admin, lector"
+            placeholder={t.database.userPlaceholder}
             value={values.userName}
             onChange={(event) => update('userName', event.target.value)}
           />
@@ -105,24 +107,24 @@ export function MySQLFormModal({ mode, initialValues, onCancel, onSave }: MySQLF
 
       <div className="form-row form-row-1">
         <div className="form-group">
-          <label className="form-label">Contraseña</label>
+          <label className="form-label">{t.database.password}</label>
           <div className="field-row">
             <input
               className="text-input"
               type={showPassword ? 'text' : 'password'}
-              placeholder="Contraseña segura para el usuario"
+              placeholder={t.database.passwordPlaceholder}
               value={values.userPassword}
               onChange={(event) => update('userPassword', event.target.value)}
             />
             <button type="button" className="btn btn-sm" onClick={() => setShowPassword((v) => !v)} tabIndex={-1}>
-              {showPassword ? 'Ocultar' : 'Mostrar'}
+              {showPassword ? t.common.hide : t.common.show}
             </button>
             <button
               type="button"
               className="btn btn-primary btn-sm"
               onClick={() => update('userPassword', generateMySQLPassword(20))}
             >
-              Generar segura
+              {t.database.generatePassword}
             </button>
           </div>
         </div>
@@ -130,24 +132,24 @@ export function MySQLFormModal({ mode, initialValues, onCancel, onSave }: MySQLF
 
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Preset de privilegios</label>
+          <label className="form-label">{t.database.privilegesPreset}</label>
           <select
             className="text-input"
             value={values.preset}
             onChange={(event) => update('preset', event.target.value as MySQLPrivilegePreset)}
           >
-            <option value="personalizado">personalizado</option>
-            <option value="produccion">producción</option>
-            <option value="desarrollo">desarrollo</option>
-            <option value="solo_lectura">solo_lectura</option>
+            <option value="personalizado">{t.database.presets.personalizado}</option>
+            <option value="produccion">{t.database.presets.produccion}</option>
+            <option value="desarrollo">{t.database.presets.desarrollo}</option>
+            <option value="solo_lectura">{t.database.presets.solo_lectura}</option>
           </select>
         </div>
         <div className="form-group">
-          <label className="form-label">Privilegios</label>
+          <label className="form-label">{t.database.privileges}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="Ej: SELECT, INSERT, UPDATE, DELETE"
+            placeholder={t.database.privilegesPlaceholder}
             value={values.privileges}
             onChange={(event) => update('privileges', event.target.value)}
           />
@@ -159,14 +161,14 @@ export function MySQLFormModal({ mode, initialValues, onCancel, onSave }: MySQLF
           <label className="form-label">Host</label>
           <select className="text-input" value={hostMode} onChange={(event) => handleHostModeChange(event.target.value as HostMode)}>
             <option value="localhost">localhost</option>
-            <option value="%">todos los hosts (%)</option>
-            <option value="custom">personalizado</option>
+            <option value="%">{t.mysql.allHosts}</option>
+            <option value="custom">{t.database.custom}</option>
           </select>
           {hostMode === 'custom' && (
             <input
               className="text-input"
               type="text"
-              placeholder="Ej: 192.168.1.100, servidor.midominio.com"
+              placeholder={t.mysql.hostPlaceholder}
               value={values.host}
               onChange={(event) => update('host', event.target.value)}
               style={{ marginTop: 8 }}
@@ -174,9 +176,9 @@ export function MySQLFormModal({ mode, initialValues, onCancel, onSave }: MySQLF
           )}
         </div>
         <div className="form-group">
-          <label className="form-label">Codificación (charset)</label>
+          <label className="form-label">{t.mysql.charsetInput}</label>
           <select className="text-input" value={values.charset} onChange={(event) => update('charset', event.target.value)}>
-            <option value="utf8mb4">UTF-8 multibyte (recomendado)</option>
+            <option value="utf8mb4">{t.mysql.utf8mb4}</option>
             <option value="utf8">UTF-8</option>
             <option value="latin1">Latin1</option>
             <option value="ascii">ASCII</option>

@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
+import { useI18n } from '../contexts/I18nContext'
 import { IconDashboard, IconInfo, IconSettings } from '../icons'
 import { DATABASES, HTTP_SERVERS } from '../data/tools'
+import type { Dictionary } from '../i18n'
 import logo from '../assets/logo.png'
 
 export type ViewId =
@@ -26,38 +28,40 @@ interface NavGroup {
   items: NavEntry[]
 }
 
-const NAV_GROUPS: NavGroup[] = [
-  {
-    key: 'inicio',
-    items: [{ id: 'dashboard', label: 'Inicio', icon: <IconDashboard /> }]
-  },
-  {
-    key: 'http',
-    label: 'Servidores HTTP',
-    items: HTTP_SERVERS.map((tool) => ({
-      id: tool.id as ViewId,
-      label: tool.name,
-      icon: <tool.Logo size={16} color={tool.brandColor} title={tool.name} />
-    }))
-  },
-  {
-    key: 'database',
-    label: 'Bases de datos',
-    items: DATABASES.map((tool) => ({
-      id: tool.id as ViewId,
-      label: tool.name,
-      icon: <tool.Logo size={16} color={tool.brandColor} title={tool.name} />
-    }))
-  },
-  {
-    key: 'general',
-    label: 'General',
-    items: [
-      { id: 'about', label: 'Acerca de', icon: <IconInfo /> },
-      { id: 'settings', label: 'Configuración', icon: <IconSettings /> }
-    ]
-  }
-]
+function buildNavGroups(t: Dictionary): NavGroup[] {
+  return [
+    {
+      key: 'inicio',
+      items: [{ id: 'dashboard', label: t.nav.home, icon: <IconDashboard /> }]
+    },
+    {
+      key: 'http',
+      label: t.nav.httpServers,
+      items: HTTP_SERVERS.map((tool) => ({
+        id: tool.id as ViewId,
+        label: tool.name,
+        icon: <tool.Logo size={16} color={tool.brandColor} title={tool.name} />
+      }))
+    },
+    {
+      key: 'database',
+      label: t.nav.databases,
+      items: DATABASES.map((tool) => ({
+        id: tool.id as ViewId,
+        label: tool.name,
+        icon: <tool.Logo size={16} color={tool.brandColor} title={tool.name} />
+      }))
+    },
+    {
+      key: 'general',
+      label: t.nav.general,
+      items: [
+        { id: 'about', label: t.nav.about, icon: <IconInfo /> },
+        { id: 'settings', label: t.nav.settings, icon: <IconSettings /> }
+      ]
+    }
+  ]
+}
 
 interface SidebarProps {
   active: ViewId
@@ -65,6 +69,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ active, onNavigate }: SidebarProps) {
+  const { t } = useI18n()
+
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -76,7 +82,7 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
       </div>
 
       <nav className="nav">
-        {NAV_GROUPS.map((group) => (
+        {buildNavGroups(t).map((group) => (
           <div key={group.key}>
             {group.label && <div className="nav-section">{group.label}</div>}
             {group.items.map((item) => (

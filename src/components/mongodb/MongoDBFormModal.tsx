@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { MongoDBRolePreset, MongoDBScriptInput } from '../../../electron/shared/databases/mongodb'
+import { useI18n } from '../../contexts/I18nContext'
 import { Modal } from '../modals/Modal'
 import { generateMongoDBPassword } from './generateMongoDBPassword'
 
@@ -43,6 +44,7 @@ interface MongoDBFormModalProps {
 }
 
 export function MongoDBFormModal({ mode, initialValues, onCancel, onSave }: MongoDBFormModalProps) {
+  const { t } = useI18n()
   const initial = initialValues ?? EMPTY_VALUES
   const [values, setValues] = useState<MongoDBScriptInput>(initial)
   const [authDbMode, setAuthDbMode] = useState<AuthDbMode>(detectAuthDbMode(initial.authDb, initial.dbName))
@@ -80,18 +82,18 @@ export function MongoDBFormModal({ mode, initialValues, onCancel, onSave }: Mong
     !values.roles.trim() ||
     !values.authDb.trim() ||
     !values.bindIp.trim()
-      ? 'Todos los campos son obligatorios.'
+      ? t.database.allRequired
       : null
 
   return (
     <Modal
-      title={mode === 'create' ? 'Nuevo script MongoDB' : 'Editar script MongoDB'}
+      title={mode === 'create' ? t.database.newTitle('MongoDB') : t.database.editTitle('MongoDB')}
       onClose={onCancel}
       size="lg"
       footer={(requestClose) => (
         <>
           <button type="button" className="btn" onClick={() => requestClose(onCancel)}>
-            Cancelar
+            {t.common.cancel}
           </button>
           <button
             type="button"
@@ -99,28 +101,28 @@ export function MongoDBFormModal({ mode, initialValues, onCancel, onSave }: Mong
             disabled={!!error}
             onClick={() => requestClose(() => onSave(values))}
           >
-            {mode === 'create' ? 'Crear' : 'Guardar cambios'}
+            {mode === 'create' ? t.common.create : t.common.saveChanges}
           </button>
         </>
       )}
     >
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Nombre de la base de datos</label>
+          <label className="form-label">{t.database.dbNameInput}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="ej: mi_programa_produccion"
+            placeholder={t.database.dbNamePlaceholder}
             value={values.dbName}
             onChange={(event) => update('dbName', event.target.value)}
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Usuario</label>
+          <label className="form-label">{t.database.user}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="ej: usuario_app, admin, lector"
+            placeholder={t.database.userPlaceholder}
             value={values.userName}
             onChange={(event) => update('userName', event.target.value)}
           />
@@ -129,24 +131,24 @@ export function MongoDBFormModal({ mode, initialValues, onCancel, onSave }: Mong
 
       <div className="form-row form-row-1">
         <div className="form-group">
-          <label className="form-label">Contraseña</label>
+          <label className="form-label">{t.database.password}</label>
           <div className="field-row">
             <input
               className="text-input"
               type={showPassword ? 'text' : 'password'}
-              placeholder="Contraseña segura para el usuario"
+              placeholder={t.database.passwordPlaceholder}
               value={values.userPassword}
               onChange={(event) => update('userPassword', event.target.value)}
             />
             <button type="button" className="btn btn-sm" onClick={() => setShowPassword((v) => !v)} tabIndex={-1}>
-              {showPassword ? 'Ocultar' : 'Mostrar'}
+              {showPassword ? t.common.hide : t.common.show}
             </button>
             <button
               type="button"
               className="btn btn-primary btn-sm"
               onClick={() => update('userPassword', generateMongoDBPassword(20))}
             >
-              Generar segura
+              {t.database.generatePassword}
             </button>
           </div>
         </div>
@@ -154,24 +156,24 @@ export function MongoDBFormModal({ mode, initialValues, onCancel, onSave }: Mong
 
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Preset de rol</label>
+          <label className="form-label">{t.mongodb.rolePreset}</label>
           <select
             className="text-input"
             value={values.preset}
             onChange={(event) => update('preset', event.target.value as MongoDBRolePreset)}
           >
-            <option value="personalizado">personalizado</option>
-            <option value="produccion">producción (readWrite)</option>
-            <option value="desarrollo">desarrollo (dbOwner, control total)</option>
-            <option value="solo_lectura">solo_lectura (read)</option>
+            <option value="personalizado">{t.database.presets.personalizado}</option>
+            <option value="produccion">{t.mongodb.presetOptions.produccion}</option>
+            <option value="desarrollo">{t.mongodb.presetOptions.desarrollo}</option>
+            <option value="solo_lectura">{t.mongodb.presetOptions.solo_lectura}</option>
           </select>
         </div>
         <div className="form-group">
-          <label className="form-label">Roles (sobre esta base)</label>
+          <label className="form-label">{t.mongodb.rolesInput}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="Ej: readWrite  ó  read, dbAdmin"
+            placeholder={t.mongodb.rolesPlaceholder}
             value={values.roles}
             onChange={(event) => update('roles', event.target.value)}
           />
@@ -180,21 +182,21 @@ export function MongoDBFormModal({ mode, initialValues, onCancel, onSave }: Mong
 
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Base de autenticación (authSource)</label>
+          <label className="form-label">{t.mongodb.authDbInput}</label>
           <select
             className="text-input"
             value={authDbMode}
             onChange={(event) => setAuthDbMode(event.target.value as AuthDbMode)}
           >
-            <option value="mismo">la misma base ({values.dbName || 'dbName'})</option>
-            <option value="admin">admin (usuario administrativo)</option>
-            <option value="custom">personalizado</option>
+            <option value="mismo">{t.mongodb.authDbSame(values.dbName || 'dbName')}</option>
+            <option value="admin">{t.mongodb.authDbAdmin}</option>
+            <option value="custom">{t.database.custom}</option>
           </select>
           {authDbMode === 'custom' && (
             <input
               className="text-input"
               type="text"
-              placeholder="Ej: admin, otra_base"
+              placeholder={t.mongodb.authDbPlaceholder}
               value={values.authDb}
               onChange={(event) => update('authDb', event.target.value)}
               style={{ marginTop: 8 }}
@@ -202,21 +204,21 @@ export function MongoDBFormModal({ mode, initialValues, onCancel, onSave }: Mong
           )}
         </div>
         <div className="form-group">
-          <label className="form-label">IP(s) de escucha (bindIp)</label>
+          <label className="form-label">{t.mongodb.bindIpInput}</label>
           <select
             className="text-input"
             value={bindIpMode}
             onChange={(event) => handleBindIpModeChange(event.target.value as BindIpMode)}
           >
-            <option value="local">solo localhost (127.0.0.1)</option>
-            <option value="todas">todas las interfaces (0.0.0.0)</option>
-            <option value="custom">personalizado</option>
+            <option value="local">{t.mongodb.bindIpLocal}</option>
+            <option value="todas">{t.mongodb.bindIpAll}</option>
+            <option value="custom">{t.database.custom}</option>
           </select>
           {bindIpMode === 'custom' && (
             <input
               className="text-input"
               type="text"
-              placeholder="Ej: 10.0.0.5,10.0.0.6 (IPs puntuales, no CIDR)"
+              placeholder={t.mongodb.bindIpPlaceholder}
               value={values.bindIp}
               onChange={(event) => update('bindIp', event.target.value)}
               style={{ marginTop: 8 }}
@@ -231,7 +233,7 @@ export function MongoDBFormModal({ mode, initialValues, onCancel, onSave }: Mong
           checked={values.createInitialCollection}
           onChange={(event) => update('createInitialCollection', event.target.checked)}
         />
-        Crear colección inicial "_init" (Mongo no muestra bases vacías en <code>show dbs</code>)
+        {t.mongodb.createInitialCollection}
       </label>
 
       {error && <p className="form-error">{error}</p>}

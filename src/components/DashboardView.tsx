@@ -1,4 +1,5 @@
 import type { AppConfig } from '../../electron/shared/config'
+import { useI18n } from '../contexts/I18nContext'
 import { IconAlert, IconCheckCircle, IconDatabase, IconFolder, IconGlobe, IconServer, IconTable } from '../icons'
 import { ALL_TOOLS, DATABASES, HTTP_SERVERS } from '../data/tools'
 import { NetworkStatusCards } from './network/NetworkStatusCards'
@@ -10,13 +11,8 @@ interface DashboardViewProps {
   onNavigate: (view: ViewId) => void
 }
 
-const STEPS = [
-  { title: 'Configura tu directorio', text: 'Elige dónde se van a guardar tus configuraciones generadas.' },
-  { title: 'Elige una herramienta', text: 'Servidor HTTP o base de datos, lo que necesites hoy.' },
-  { title: 'Genera y copia', text: 'Completa el formulario y copia el resultado a tu proyecto.' }
-]
-
 export function DashboardView({ config, onNavigate }: DashboardViewProps) {
+  const { t } = useI18n()
   const ready = !!config?.workingDirectory
 
   return (
@@ -32,23 +28,21 @@ export function DashboardView({ config, onNavigate }: DashboardViewProps) {
                 <h2>SYS-BOOTSTRAPPER</h2>
                 <span className="dash-version-badge">v0.1.0</span>
               </div>
-              <p>Tu navaja suiza para configurar servidores y bases de datos, todo desde un mismo lugar.</p>
+              <p>{t.dashboard.tagline}</p>
             </div>
           </div>
           <span className="dash-welcome-badge">
             {ready ? <IconCheckCircle /> : <IconAlert />}
-            {ready ? 'Directorio configurado' : 'Sin directorio configurado'}
+            {ready ? t.dashboard.directoryReady : t.dashboard.directoryMissing}
           </span>
         </div>
 
-        <blockquote className="dash-slogan">
-          “Si a mí me sirve, probablemente a ti también te sirva… en alguna weá.”
-        </blockquote>
+        <blockquote className="dash-slogan">“{t.dashboard.slogan}”</blockquote>
       </div>
 
-      <div className="section-title">Primeros pasos</div>
+      <div className="section-title">{t.dashboard.gettingStarted}</div>
       <div className="steps">
-        {STEPS.map((step, i) => (
+        {t.dashboard.steps.map((step, i) => (
           <div className="step" key={step.title}>
             <span className="step-number">{i + 1}</span>
             <div>
@@ -59,13 +53,13 @@ export function DashboardView({ config, onNavigate }: DashboardViewProps) {
         ))}
       </div>
 
-      <div className="section-title">Resumen</div>
+      <div className="section-title">{t.dashboard.summary}</div>
       <div className="cards">
         <div className="card">
           <div className="card-icon">
             <IconGlobe />
           </div>
-          <div className="card-label">Servidores HTTP</div>
+          <div className="card-label">{t.nav.httpServers}</div>
           <div className="card-value">{HTTP_SERVERS.length}</div>
           <div className="card-hint">Apache · Nginx · Caddy</div>
         </div>
@@ -74,7 +68,7 @@ export function DashboardView({ config, onNavigate }: DashboardViewProps) {
           <div className="card-icon">
             <IconDatabase />
           </div>
-          <div className="card-label">Bases de datos</div>
+          <div className="card-label">{t.nav.databases}</div>
           <div className="card-value">{DATABASES.length}</div>
           <div className="card-hint">MySQL · PostgreSQL · MongoDB +3</div>
         </div>
@@ -83,25 +77,25 @@ export function DashboardView({ config, onNavigate }: DashboardViewProps) {
           <div className="card-icon">
             <IconTable />
           </div>
-          <div className="card-label">Herramientas totales</div>
+          <div className="card-label">{t.dashboard.totalTools}</div>
           <div className="card-value">{ALL_TOOLS.length}</div>
-          <div className="card-hint">Y sumando</div>
+          <div className="card-hint">{t.dashboard.andCounting}</div>
         </div>
 
         <div className={`card${ready ? ' card-alt' : ''}`}>
           <div className="card-icon">
             <IconFolder />
           </div>
-          <div className="card-label">Directorio de trabajo</div>
-          <div className="card-value">{ready ? 'Listo' : 'Pendiente'}</div>
-          <div className="card-hint">{ready ? config?.workingDirectory : 'Configúralo para empezar'}</div>
+          <div className="card-label">{t.dashboard.workingDirectory}</div>
+          <div className="card-value">{ready ? t.dashboard.ready : t.dashboard.pending}</div>
+          <div className="card-hint">{ready ? config?.workingDirectory : t.dashboard.setUpToStart}</div>
         </div>
       </div>
 
-      <div className="section-title">Red</div>
+      <div className="section-title">{t.dashboard.network}</div>
       <NetworkStatusCards />
 
-      <div className="section-title">Accesos rápidos</div>
+      <div className="section-title">{t.dashboard.quickAccess}</div>
       <div className="tool-tiles">
         {ALL_TOOLS.map((tool) => (
           <button type="button" className="tool-tile" key={tool.id} onClick={() => onNavigate(tool.id as ViewId)}>

@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import type { AppConfig } from '../../electron/shared/config'
-import { IconAlert, IconCheckCircle, IconFolder, IconFolderOpen, IconTrash } from '../icons'
+import { LOCALES, type AppConfig, type Locale } from '../../electron/shared/config'
+import { IconAlert, IconCheckCircle, IconFolder, IconFolderOpen, IconLanguage, IconTrash } from '../icons'
+import { LOCALE_NAMES } from '../i18n'
 import { ConfirmModal } from './modals/ConfirmModal'
+import { useI18n } from '../contexts/I18nContext'
 import { useToast } from '../contexts/ToastContext'
 
 interface SettingsViewProps {
@@ -12,6 +14,7 @@ interface SettingsViewProps {
 
 export function SettingsView({ config: initialConfig, configPath, defaultWorkingDirectory }: SettingsViewProps) {
   const { showToast } = useToast()
+  const { t, locale, setLocale } = useI18n()
   const [config, setConfig] = useState<AppConfig | null>(initialConfig)
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<number | null>(null)
@@ -25,9 +28,9 @@ export function SettingsView({ config: initialConfig, configPath, defaultWorking
       const updated = await window.sysBootstrapper.config.setWorkingDirectory(selected)
       setConfig(updated)
       setSavedAt(Date.now())
-      showToast('Directorio de trabajo actualizado.', 'success')
+      showToast(t.settings.directoryUpdated, 'success')
     } catch {
-      showToast('No se pudo guardar el directorio de trabajo.', 'danger')
+      showToast(t.settings.directorySaveError, 'danger')
     } finally {
       setSaving(false)
     }
@@ -40,9 +43,20 @@ export function SettingsView({ config: initialConfig, configPath, defaultWorking
       const updated = await window.sysBootstrapper.config.setWorkingDirectory('')
       setConfig(updated)
       setSavedAt(Date.now())
-      showToast('Se quitó el directorio de trabajo de la configuración.', 'success')
+      showToast(t.settings.directoryRemoved, 'success')
     } catch {
-      showToast('No se pudo quitar el directorio de trabajo.', 'danger')
+      showToast(t.settings.directoryRemoveError, 'danger')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleLanguageChange(next: Locale) {
+    setSaving(true)
+    try {
+      setConfig(await setLocale(next))
+    } catch {
+      showToast(t.settings.languageSaveError, 'danger')
     } finally {
       setSaving(false)
     }
@@ -53,30 +67,28 @@ export function SettingsView({ config: initialConfig, configPath, defaultWorking
   return (
     <div className="view">
       <div className="view-header">
-        <h1 className="view-title">Configuración</h1>
-        <p className="view-description">
-          Define el directorio de trabajo donde esta app guardará los archivos que genere.
-        </p>
+        <h1 className="view-title">{t.nav.settings}</h1>
+        <p className="view-description">{t.settings.description}</p>
       </div>
 
       <div className="panel">
         <h2 className="panel-title">
           <IconFolderOpen />
-          Directorio de trabajo
+          {t.settings.workingDirectory}
         </h2>
-        <p className="panel-hint">Se usará como destino por defecto para los archivos generados.</p>
+        <p className="panel-hint">{t.settings.workingDirectoryHint}</p>
 
         <div className="field-row">
           <input
             className="text-input"
             type="text"
             readOnly
-            placeholder="Ninguna carpeta seleccionada"
+            placeholder={t.settings.noFolderSelected}
             value={config?.workingDirectory ?? ''}
           />
           <button type="button" className="btn btn-primary" onClick={handleSelectDirectory} disabled={saving}>
             <IconFolder />
-            {hasWorkingDirectory ? 'Cambiar' : 'Elegir carpeta'}
+            {hasWorkingDirectory ? t.settings.change : t.settings.chooseFolder}
           </button>
           {hasWorkingDirectory && (
             <button
@@ -86,7 +98,7 @@ export function SettingsView({ config: initialConfig, configPath, defaultWorking
               disabled={saving}
             >
               <IconTrash />
-              Quitar
+              {t.settings.remove}
             </button>
           )}
         </div>
@@ -94,39 +106,65 @@ export function SettingsView({ config: initialConfig, configPath, defaultWorking
         {hasWorkingDirectory ? (
           <div className="status-line ok">
             <IconCheckCircle />
-            Directorio configurado{savedAt ? ' y guardado' : ''}.
+            {t.settings.directoryConfigured(!!savedAt)}
           </div>
         ) : (
           <>
             <div className="status-line warn">
               <IconAlert />
-              Aún no se ha elegido un directorio de trabajo.
+              {t.settings.directoryMissing}
             </div>
             {defaultWorkingDirectory && (
-              <p className="panel-hint">
-                Se utilizará <code>{defaultWorkingDirectory}</code> por defecto.
-              </p>
+              <p className="panel-hint">{t.settings.defaultDirectory(<code>{defaultWorkingDirectory}</code>)}</p>
             )}
           </>
         )}
       </div>
 
       <div className="panel">
-        <h2 className="panel-title">Archivo de configuración</h2>
-        <p className="panel-hint">Registro JSON guardado en una carpeta de datos oculta del sistema operativo.</p>
+        <h2 className="panel-title">
+          <IconLanguage />
+          {t.settings.language}
+        </h2>
+        <p className="panel-hint">{t.settings.languageHint}</p>
+
+        <div className="field-row">
+          <select
+            className="text-input"
+            value={locale}
+            onChange={(event) => handleLanguageChange(event.target.value as Locale)}
+            disabled={saving}
+          >
+            {LOCALES.map((code) => (
+              <option key={code} value={code}>
+                {LOCALE_NAMES[code]}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="panel">
+        <h2 className="panel-title">{t.settings.configFile}</h2>
+        <p className="panel-hint">{t.settings.configFileHint}</p>
         <div className="meta-list">
           <div>
-            Ruta: <code>{configPath || '…'}</code>
+            {t.settings.path} <code>{configPath || '…'}</code>
           </div>
-          <div>Última actualización: {config && config.updatedAt !== new Date(0).toISOString() ? new Date(config.updatedAt).toLocaleString() : '— (sin guardar aún)'}</div>
+          <div>
+            {t.settings.lastUpdated}{' '}
+            {config && config.updatedAt !== new Date(0).toISOString()
+              ? new Date(config.updatedAt).toLocaleString(locale)
+              : t.settings.notSavedYet}
+          </div>
         </div>
       </div>
 
       {showClearConfirm && (
         <ConfirmModal
-          title="Quitar directorio de trabajo"
-          message="Esto solo borra la referencia guardada en la configuración; la carpeta y su contenido en disco no se tocan. ¿Continuar?"
-          confirmLabel="Quitar"
+          title={t.settings.removeDirectoryTitle}
+          message={t.settings.removeDirectoryMessage}
+          confirmLabel={t.settings.remove}
           onConfirm={handleClearDirectory}
           onCancel={() => setShowClearConfirm(false)}
         />

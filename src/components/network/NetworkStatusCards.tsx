@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import type { PrivateIpInfo, PublicIpInfo } from '../../../electron/shared/network'
+import { useI18n } from '../../contexts/I18nContext'
 import { IconCheck, IconCopy, IconGlobe, IconNetwork, IconRefresh, IconShield } from '../../icons'
 
 type BadgeTone = 'warning' | 'neutral'
@@ -32,13 +33,14 @@ function useCopyToClipboard(): [boolean, (text: string) => void] {
 }
 
 function IpCard({ icon, title, address, hint, errorMessage, badge, loading, onRefresh }: IpCardProps) {
+  const { t } = useI18n()
   const [copied, copy] = useCopyToClipboard()
 
   return (
     <div className="card net-card">
       <div className="net-card-top">
         <div className="card-icon">{icon}</div>
-        <button type="button" className="net-card-refresh" onClick={onRefresh} disabled={loading} title="Actualizar">
+        <button type="button" className="net-card-refresh" onClick={onRefresh} disabled={loading} title={t.common.refresh}>
           <IconRefresh className={loading ? 'net-spin' : ''} />
         </button>
       </div>
@@ -46,7 +48,7 @@ function IpCard({ icon, title, address, hint, errorMessage, badge, loading, onRe
       <div className="card-label">{title}</div>
 
       <div className="net-card-value-row">
-        <span className="net-card-value">{loading ? 'Buscando…' : address ?? 'No disponible'}</span>
+        <span className="net-card-value">{loading ? t.network.searching : address ?? t.network.unavailable}</span>
         {address && !loading && (
           <button type="button" className="btn btn-sm" onClick={() => copy(address)}>
             {copied ? <IconCheck /> : <IconCopy />}
@@ -68,6 +70,7 @@ function IpCard({ icon, title, address, hint, errorMessage, badge, loading, onRe
 }
 
 export function NetworkStatusCards() {
+  const { t } = useI18n()
   const [privateInfo, setPrivateInfo] = useState<PrivateIpInfo | null>(null)
   const [privateLoading, setPrivateLoading] = useState(true)
   const [publicInfo, setPublicInfo] = useState<PublicIpInfo | null>(null)
@@ -92,32 +95,32 @@ export function NetworkStatusCards() {
     loadPublicIp()
   }, [loadPrivateIp, loadPublicIp])
 
-  const privateBadge = privateInfo?.kind === 'cgnat' ? { label: 'Rango CG-NAT', tone: 'warning' as const } : null
+  const privateBadge = privateInfo?.kind === 'cgnat' ? { label: t.network.cgnatRange, tone: 'warning' as const } : null
 
   const publicBadge =
     publicInfo?.kind === 'cgnat'
-      ? { label: 'Posible CG-NAT', tone: 'warning' as const }
+      ? { label: t.network.possibleCgnat, tone: 'warning' as const }
       : publicInfo?.kind === 'private'
-        ? { label: 'Rango privado (inusual)', tone: 'warning' as const }
+        ? { label: t.network.unusualPrivateRange, tone: 'warning' as const }
         : null
 
   return (
     <div className="cards net-cards">
       <IpCard
         icon={<IconNetwork />}
-        title="IP privada (LAN)"
+        title={t.network.privateIp}
         address={privateInfo?.address ?? null}
-        hint={privateInfo?.interfaceName ? `Interfaz: ${privateInfo.interfaceName}` : 'Sin interfaces de red activas'}
+        hint={privateInfo?.interfaceName ? t.network.interfaceName(privateInfo.interfaceName) : t.network.noInterfaces}
         badge={privateBadge}
         loading={privateLoading}
         onRefresh={loadPrivateIp}
       />
       <IpCard
         icon={<IconGlobe />}
-        title="IP pública"
+        title={t.network.publicIp}
         address={publicInfo?.address ?? null}
-        hint="Si cambia seguido o no coincide con la de tu router, puede que estés detrás de un CG-NAT o VPN."
-        errorMessage={publicInfo?.error ?? null}
+        hint={t.network.publicIpHint}
+        errorMessage={publicInfo && !publicInfo.address ? t.network.publicIpError(publicInfo.error) : null}
         badge={publicBadge}
         loading={publicLoading}
         onRefresh={loadPublicIp}

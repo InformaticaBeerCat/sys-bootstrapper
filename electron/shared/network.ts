@@ -8,6 +8,7 @@ export interface PrivateIpInfo {
 
 export interface PublicIpInfo {
   address: string | null
+  /** Detalle técnico del último proveedor que falló (sin traducir); el mensaje visible lo arma el renderer. */
   error: string | null
   kind: IpRangeKind
 }

@@ -1,20 +1,20 @@
 import logo from '../assets/logo.png'
+import { useI18n } from '../contexts/I18nContext'
 import { DATABASES, HTTP_SERVERS } from '../data/tools'
 import { IconDatabase, IconGlobe, IconInfo } from '../icons'
 
 const STACK = ['Electron', 'React', 'TypeScript', 'Vite']
 
 export function AboutView() {
+  const { t } = useI18n()
+
   return (
     <div className="view">
       <div className="tool-header">
         <img className="about-logo" src={logo} alt="BeerCat" />
         <div>
           <h1 className="view-title">SYS-BOOTSTRAPPER</h1>
-          <p className="view-description">
-            La navaja suiza de BeerCat para sysadmins: configuraciones y utilidades de uso frecuente, todas en un
-            mismo lugar.
-          </p>
+          <p className="view-description">{t.about.description}</p>
         </div>
       </div>
 
@@ -23,7 +23,7 @@ export function AboutView() {
           <IconInfo />
           Stack
         </h2>
-        <p className="panel-hint">Con qué está construida la app.</p>
+        <p className="panel-hint">{t.about.stackHint}</p>
         <div className="comp-row">
           {STACK.map((item) => (
             <span className="badge badge-neutral" key={item}>
@@ -34,26 +34,26 @@ export function AboutView() {
       </div>
 
       <div className="panel">
-        <h2 className="panel-title">Categorías disponibles</h2>
-        <p className="panel-hint">Más utilidades y generadores van llegando por categoría.</p>
+        <h2 className="panel-title">{t.about.categories}</h2>
+        <p className="panel-hint">{t.about.categoriesHint}</p>
 
         <div className="about-category">
           <IconGlobe />
           <div>
-            <strong>Servidores HTTP</strong>
-            <span className="text-muted"> — {HTTP_SERVERS.length} motores</span>
+            <strong>{t.nav.httpServers}</strong>
+            <span className="text-muted"> — {t.about.engines(HTTP_SERVERS.length)}</span>
           </div>
         </div>
         <div className="about-category">
           <IconDatabase />
           <div>
-            <strong>Bases de datos</strong>
-            <span className="text-muted"> — {DATABASES.length} motores</span>
+            <strong>{t.nav.databases}</strong>
+            <span className="text-muted"> — {t.about.engines(DATABASES.length)}</span>
           </div>
         </div>
       </div>
 
-      <p className="about-footer">SYS-BOOTSTRAPPER v0.1.0 · Uso interno BeerCat</p>
+      <p className="about-footer">SYS-BOOTSTRAPPER v0.1.0 · {t.about.internalUse}</p>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { SiPostgresql, SiPostgresqlHex } from '@icons-pack/react-simple-icons'
 import type { PostgreSQLScript, PostgreSQLScriptInput } from '../../../electron/shared/databases/postgresql'
+import { useI18n } from '../../contexts/I18nContext'
 import { useToast } from '../../contexts/ToastContext'
 import { IconEdit, IconEye, IconFolderOpen, IconPlus, IconTable, IconTools, IconTrash } from '../../icons'
 import { ConfirmModal } from '../modals/ConfirmModal'
@@ -16,6 +17,7 @@ interface PostgreSQLViewProps {
 
 export function PostgreSQLView({ initialScripts }: PostgreSQLViewProps) {
   const { showToast } = useToast()
+  const { t } = useI18n()
   const [scripts, setScripts] = useState<PostgreSQLScript[]>(initialScripts)
   const [formState, setFormState] = useState<FormState | null>(null)
   const [showScript, setShowScript] = useState<PostgreSQLScript | null>(null)
@@ -27,15 +29,15 @@ export function PostgreSQLView({ initialScripts }: PostgreSQLViewProps) {
       if (formState?.mode === 'edit') {
         const updated = await window.sysBootstrapper.postgresql.update(formState.script.id, values)
         setScripts(updated)
-        showToast('Script editado exitosamente.', 'success')
+        showToast(t.database.edited, 'success')
       } else {
         const updated = await window.sysBootstrapper.postgresql.add(values)
         setScripts(updated)
-        showToast('Script creado exitosamente.', 'success')
+        showToast(t.database.created, 'success')
       }
       setFormState(null)
     } catch {
-      showToast('No se pudo guardar el script.', 'danger')
+      showToast(t.database.saveError, 'danger')
     }
   }
 
@@ -44,9 +46,9 @@ export function PostgreSQLView({ initialScripts }: PostgreSQLViewProps) {
     try {
       const updated = await window.sysBootstrapper.postgresql.removeAt(deleteTarget.id)
       setScripts(updated)
-      showToast('Script eliminado exitosamente.', 'success')
+      showToast(t.database.deleted, 'success')
     } catch {
-      showToast('No se pudo eliminar el script.', 'danger')
+      showToast(t.database.deleteError, 'danger')
     } finally {
       setDeleteTarget(null)
     }
@@ -67,7 +69,7 @@ export function PostgreSQLView({ initialScripts }: PostgreSQLViewProps) {
         </span>
         <div>
           <h1 className="view-title">PostgreSQL</h1>
-          <p className="view-description">Scripts de creación de base de datos, rol y privilegios para PostgreSQL.</p>
+          <p className="view-description">{t.postgresql.description}</p>
         </div>
       </div>
 
@@ -78,14 +80,14 @@ export function PostgreSQLView({ initialScripts }: PostgreSQLViewProps) {
             Scripts
           </h2>
           <div className="comp-row">
-            <span className="badge badge-neutral">{scripts.length} registro(s)</span>
+            <span className="badge badge-neutral">{t.common.records(scripts.length)}</span>
             <button type="button" className="btn btn-sm" onClick={handleOpenScriptsDir}>
               <IconFolderOpen />
-              Abrir directorio
+              {t.common.openDirectory}
             </button>
             <button type="button" className="btn btn-primary btn-sm" onClick={() => setFormState({ mode: 'create' })}>
               <IconPlus />
-              Nueva
+              {t.common.new}
             </button>
           </div>
         </div>
@@ -95,20 +97,20 @@ export function PostgreSQLView({ initialScripts }: PostgreSQLViewProps) {
             <table>
               <thead>
                 <tr>
-                  <th>Base de datos</th>
-                  <th>Usuario</th>
-                  <th>Conexiones permitidas</th>
-                  <th>Privilegios</th>
+                  <th>{t.database.database}</th>
+                  <th>{t.database.user}</th>
+                  <th>{t.postgresql.allowedConnections}</th>
+                  <th>{t.database.privileges}</th>
                   <th>Preset</th>
-                  <th>Codificación</th>
-                  <th>Acciones</th>
+                  <th>{t.database.encoding}</th>
+                  <th>{t.common.actions}</th>
                 </tr>
               </thead>
               <tbody>
                 {scripts.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="table-empty">
-                      No hay scripts registrados — usa "Nueva" para agregar el primero.
+                      {t.database.empty}
                     </td>
                   </tr>
                 ) : (
@@ -118,13 +120,13 @@ export function PostgreSQLView({ initialScripts }: PostgreSQLViewProps) {
                       <td>{script.userName}</td>
                       <td>{script.allowedHost}</td>
                       <td>{script.privileges}</td>
-                      <td>{script.preset}</td>
+                      <td>{t.database.presets[script.preset]}</td>
                       <td>{script.encoding}</td>
                       <td>
                         <div className="row-actions">
                           <button type="button" className="btn btn-xs" onClick={() => setShowScript(script)}>
                             <IconEye />
-                            Ver
+                            {t.common.view}
                           </button>
                           <button
                             type="button"
@@ -132,17 +134,17 @@ export function PostgreSQLView({ initialScripts }: PostgreSQLViewProps) {
                             onClick={() => setFormState({ mode: 'edit', script })}
                           >
                             <IconEdit />
-                            Editar
+                            {t.common.edit}
                           </button>
                           <button type="button" className="btn btn-xs" onClick={() => setSqlScript(script)}>
                             <IconTools />
-                            Generar .sql
+                            {t.common.generate('.sql')}
                           </button>
                           <button
                             type="button"
                             className="btn btn-danger btn-xs"
                             onClick={() => setDeleteTarget(script)}
-                            aria-label="Eliminar script"
+                            aria-label={t.database.deleteTitle}
                           >
                             <IconTrash />
                           </button>
@@ -172,9 +174,9 @@ export function PostgreSQLView({ initialScripts }: PostgreSQLViewProps) {
 
       {deleteTarget && (
         <ConfirmModal
-          title="Eliminar script"
-          message={`Esto elimina el registro y, si existe, la carpeta generada en disco para "${deleteTarget.dbName}". ¿Continuar?`}
-          confirmLabel="Eliminar"
+          title={t.database.deleteTitle}
+          message={t.common.deleteRecordMessage(deleteTarget.dbName)}
+          confirmLabel={t.common.delete}
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
         />

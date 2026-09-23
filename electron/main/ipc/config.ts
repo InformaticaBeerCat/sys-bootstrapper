@@ -1,4 +1,5 @@
 import { ipcMain } from 'electron'
+import { isLocale } from '../../shared/config'
 import { IPC_CHANNELS } from '../../shared/ipcChannels'
 import { readConfig, writeConfig } from '../configStore'
 import { getConfigFilePath, getDefaultWorkingDirectory } from '../paths'
@@ -13,4 +14,9 @@ export function registerConfigHandlers(): void {
   ipcMain.handle(IPC_CHANNELS.config.setWorkingDirectory, (_event, workingDirectory: string) =>
     writeConfig({ workingDirectory })
   )
+
+  ipcMain.handle(IPC_CHANNELS.config.setLanguage, (_event, language: unknown) => {
+    if (!isLocale(language)) throw new Error(`Idioma no soportado: ${String(language)}`)
+    return writeConfig({ language })
+  })
 }

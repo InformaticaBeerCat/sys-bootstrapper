@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { SiNginx, SiNginxHex } from '@icons-pack/react-simple-icons'
 import type { NginxServer, NginxServerInput } from '../../../electron/shared/http-servers/nginx'
+import { useI18n } from '../../contexts/I18nContext'
 import { useToast } from '../../contexts/ToastContext'
 import { IconEdit, IconEye, IconFolderOpen, IconPlus, IconTable, IconTools, IconTrash } from '../../icons'
 import { ConfirmModal } from '../modals/ConfirmModal'
@@ -16,6 +17,7 @@ interface NginxViewProps {
 
 export function NginxView({ initialServers }: NginxViewProps) {
   const { showToast } = useToast()
+  const { t } = useI18n()
   const [servers, setServers] = useState<NginxServer[]>(initialServers)
   const [formState, setFormState] = useState<FormState | null>(null)
   const [showServer, setShowServer] = useState<NginxServer | null>(null)
@@ -27,15 +29,15 @@ export function NginxView({ initialServers }: NginxViewProps) {
       if (formState?.mode === 'edit') {
         const updated = await window.sysBootstrapper.nginx.update(formState.server.id, values)
         setServers(updated)
-        showToast('Configuración editada exitosamente.', 'success')
+        showToast(t.httpServer.edited, 'success')
       } else {
         const updated = await window.sysBootstrapper.nginx.add(values)
         setServers(updated)
-        showToast('Configuración creada exitosamente.', 'success')
+        showToast(t.httpServer.created, 'success')
       }
       setFormState(null)
     } catch {
-      showToast('No se pudo guardar la configuración.', 'danger')
+      showToast(t.httpServer.saveError, 'danger')
     }
   }
 
@@ -44,9 +46,9 @@ export function NginxView({ initialServers }: NginxViewProps) {
     try {
       const updated = await window.sysBootstrapper.nginx.removeAt(deleteTarget.id)
       setServers(updated)
-      showToast('Configuración eliminada exitosamente.', 'success')
+      showToast(t.httpServer.deleted, 'success')
     } catch {
-      showToast('No se pudo eliminar la configuración.', 'danger')
+      showToast(t.httpServer.deleteError, 'danger')
     } finally {
       setDeleteTarget(null)
     }
@@ -64,9 +66,7 @@ export function NginxView({ initialServers }: NginxViewProps) {
         </span>
         <div>
           <h1 className="view-title">Nginx</h1>
-          <p className="view-description">
-            Configuraciones de server block para Nginx: dominios, HTTP/HTTPS, SSL y proxy inverso.
-          </p>
+          <p className="view-description">{t.nginx.description}</p>
         </div>
       </div>
 
@@ -74,17 +74,17 @@ export function NginxView({ initialServers }: NginxViewProps) {
         <div className="panel-head">
           <h2 className="panel-title">
             <IconTable />
-            Configuraciones
+            {t.httpServer.configurations}
           </h2>
           <div className="comp-row">
-            <span className="badge badge-neutral">{servers.length} registro(s)</span>
+            <span className="badge badge-neutral">{t.common.records(servers.length)}</span>
             <button type="button" className="btn btn-sm" onClick={handleOpenConfigDir}>
               <IconFolderOpen />
-              Abrir directorio
+              {t.common.openDirectory}
             </button>
             <button type="button" className="btn btn-primary btn-sm" onClick={() => setFormState({ mode: 'create' })}>
               <IconPlus />
-              Nueva
+              {t.common.new}
             </button>
           </div>
         </div>
@@ -94,20 +94,20 @@ export function NginxView({ initialServers }: NginxViewProps) {
             <table>
               <thead>
                 <tr>
-                  <th>Dominios</th>
+                  <th>{t.httpServer.domains}</th>
                   <th>HTTP</th>
                   <th>HTTPS</th>
                   <th>Path / Proxy</th>
                   <th>SSL</th>
                   <th>Redirect</th>
-                  <th>Acciones</th>
+                  <th>{t.common.actions}</th>
                 </tr>
               </thead>
               <tbody>
                 {servers.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="table-empty">
-                      No hay configuraciones registradas — usa "Nueva" para agregar la primera.
+                      {t.httpServer.empty}
                     </td>
                   </tr>
                 ) : (
@@ -118,12 +118,12 @@ export function NginxView({ initialServers }: NginxViewProps) {
                       <td>{server.https ? '443' : '—'}</td>
                       <td>{server.isProxy ? `http://${server.proxyTarget}` : server.path || '—'}</td>
                       <td>{server.https ? server.ssl : '—'}</td>
-                      <td>{server.redirect ? '301 → https' : 'No'}</td>
+                      <td>{server.redirect ? '301 → https' : t.common.no}</td>
                       <td>
                         <div className="row-actions">
                           <button type="button" className="btn btn-xs" onClick={() => setShowServer(server)}>
                             <IconEye />
-                            Ver
+                            {t.common.view}
                           </button>
                           <button
                             type="button"
@@ -131,17 +131,17 @@ export function NginxView({ initialServers }: NginxViewProps) {
                             onClick={() => setFormState({ mode: 'edit', server })}
                           >
                             <IconEdit />
-                            Editar
+                            {t.common.edit}
                           </button>
                           <button type="button" className="btn btn-xs" onClick={() => setConfServer(server)}>
                             <IconTools />
-                            Generar .conf
+                            {t.common.generate('.conf')}
                           </button>
                           <button
                             type="button"
                             className="btn btn-danger btn-xs"
                             onClick={() => setDeleteTarget(server)}
-                            aria-label="Eliminar configuración"
+                            aria-label={t.httpServer.deleteTitle}
                           >
                             <IconTrash />
                           </button>
@@ -171,9 +171,9 @@ export function NginxView({ initialServers }: NginxViewProps) {
 
       {deleteTarget && (
         <ConfirmModal
-          title="Eliminar configuración"
-          message={`Esto elimina el registro y, si existe, la carpeta generada en disco para "${deleteTarget.domains}". ¿Continuar?`}
-          confirmLabel="Eliminar"
+          title={t.httpServer.deleteTitle}
+          message={t.common.deleteRecordMessage(deleteTarget.domains)}
+          confirmLabel={t.common.delete}
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
         />

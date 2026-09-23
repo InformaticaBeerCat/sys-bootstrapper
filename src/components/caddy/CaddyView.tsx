@@ -1,19 +1,13 @@
 import { useState } from 'react'
 import { SiCaddy, SiCaddyHex } from '@icons-pack/react-simple-icons'
 import type { CaddyServer, CaddyServerInput } from '../../../electron/shared/http-servers/caddy'
+import { useI18n } from '../../contexts/I18nContext'
 import { useToast } from '../../contexts/ToastContext'
 import { IconEdit, IconEye, IconFolderOpen, IconPlus, IconTable, IconTools, IconTrash } from '../../icons'
 import { ConfirmModal } from '../modals/ConfirmModal'
 import { CaddyConfPreviewModal } from './CaddyConfPreviewModal'
 import { CaddyFormModal } from './CaddyFormModal'
 import { CaddyShowModal } from './CaddyShowModal'
-
-const TLS_LABELS: Record<CaddyServer['tls'], string> = {
-  auto: 'Automático',
-  internal: 'Interno',
-  custom: 'Personalizado',
-  off: 'Desactivado'
-}
 
 type FormState = { mode: 'create' } | { mode: 'edit'; server: CaddyServer }
 
@@ -23,6 +17,7 @@ interface CaddyViewProps {
 
 export function CaddyView({ initialServers }: CaddyViewProps) {
   const { showToast } = useToast()
+  const { t } = useI18n()
   const [servers, setServers] = useState<CaddyServer[]>(initialServers)
   const [formState, setFormState] = useState<FormState | null>(null)
   const [showServer, setShowServer] = useState<CaddyServer | null>(null)
@@ -34,15 +29,15 @@ export function CaddyView({ initialServers }: CaddyViewProps) {
       if (formState?.mode === 'edit') {
         const updated = await window.sysBootstrapper.caddy.update(formState.server.id, values)
         setServers(updated)
-        showToast('Configuración editada exitosamente.', 'success')
+        showToast(t.httpServer.edited, 'success')
       } else {
         const updated = await window.sysBootstrapper.caddy.add(values)
         setServers(updated)
-        showToast('Configuración creada exitosamente.', 'success')
+        showToast(t.httpServer.created, 'success')
       }
       setFormState(null)
     } catch {
-      showToast('No se pudo guardar la configuración.', 'danger')
+      showToast(t.httpServer.saveError, 'danger')
     }
   }
 
@@ -51,9 +46,9 @@ export function CaddyView({ initialServers }: CaddyViewProps) {
     try {
       const updated = await window.sysBootstrapper.caddy.removeAt(deleteTarget.id)
       setServers(updated)
-      showToast('Configuración eliminada exitosamente.', 'success')
+      showToast(t.httpServer.deleted, 'success')
     } catch {
-      showToast('No se pudo eliminar la configuración.', 'danger')
+      showToast(t.httpServer.deleteError, 'danger')
     } finally {
       setDeleteTarget(null)
     }
@@ -71,9 +66,7 @@ export function CaddyView({ initialServers }: CaddyViewProps) {
         </span>
         <div>
           <h1 className="view-title">Caddy</h1>
-          <p className="view-description">
-            Configuraciones de sitio para Caddy: dominios, HTTPS automático, proxy inverso y archivos estáticos.
-          </p>
+          <p className="view-description">{t.caddy.description}</p>
         </div>
       </div>
 
@@ -81,17 +74,17 @@ export function CaddyView({ initialServers }: CaddyViewProps) {
         <div className="panel-head">
           <h2 className="panel-title">
             <IconTable />
-            Configuraciones
+            {t.httpServer.configurations}
           </h2>
           <div className="comp-row">
-            <span className="badge badge-neutral">{servers.length} registro(s)</span>
+            <span className="badge badge-neutral">{t.common.records(servers.length)}</span>
             <button type="button" className="btn btn-sm" onClick={handleOpenConfigDir}>
               <IconFolderOpen />
-              Abrir directorio
+              {t.common.openDirectory}
             </button>
             <button type="button" className="btn btn-primary btn-sm" onClick={() => setFormState({ mode: 'create' })}>
               <IconPlus />
-              Nueva
+              {t.common.new}
             </button>
           </div>
         </div>
@@ -101,34 +94,34 @@ export function CaddyView({ initialServers }: CaddyViewProps) {
             <table>
               <thead>
                 <tr>
-                  <th>Dominios</th>
-                  <th>Modo</th>
+                  <th>{t.httpServer.domains}</th>
+                  <th>{t.caddy.mode}</th>
                   <th>Root / Proxy</th>
                   <th>TLS</th>
-                  <th>Compresión</th>
-                  <th>Acciones</th>
+                  <th>{t.caddy.compression}</th>
+                  <th>{t.common.actions}</th>
                 </tr>
               </thead>
               <tbody>
                 {servers.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="table-empty">
-                      No hay configuraciones registradas — usa "Nueva" para agregar la primera.
+                      {t.httpServer.empty}
                     </td>
                   </tr>
                 ) : (
                   servers.map((server) => (
                     <tr key={server.id}>
                       <td>{server.domains}</td>
-                      <td>{server.mode === 'proxy' ? 'Proxy' : 'Estático'}</td>
+                      <td>{server.mode === 'proxy' ? t.caddy.modeProxy : t.caddy.modeStatic}</td>
                       <td>{server.mode === 'proxy' ? server.proxyTarget : server.path || '—'}</td>
-                      <td>{TLS_LABELS[server.tls]}</td>
+                      <td>{t.caddy.tlsShort[server.tls]}</td>
                       <td>{server.encodeGzip ? 'zstd gzip' : '—'}</td>
                       <td>
                         <div className="row-actions">
                           <button type="button" className="btn btn-xs" onClick={() => setShowServer(server)}>
                             <IconEye />
-                            Ver
+                            {t.common.view}
                           </button>
                           <button
                             type="button"
@@ -136,17 +129,17 @@ export function CaddyView({ initialServers }: CaddyViewProps) {
                             onClick={() => setFormState({ mode: 'edit', server })}
                           >
                             <IconEdit />
-                            Editar
+                            {t.common.edit}
                           </button>
                           <button type="button" className="btn btn-xs" onClick={() => setConfServer(server)}>
                             <IconTools />
-                            Generar Caddyfile
+                            {t.common.generate('Caddyfile')}
                           </button>
                           <button
                             type="button"
                             className="btn btn-danger btn-xs"
                             onClick={() => setDeleteTarget(server)}
-                            aria-label="Eliminar configuración"
+                            aria-label={t.httpServer.deleteTitle}
                           >
                             <IconTrash />
                           </button>
@@ -176,9 +169,9 @@ export function CaddyView({ initialServers }: CaddyViewProps) {
 
       {deleteTarget && (
         <ConfirmModal
-          title="Eliminar configuración"
-          message={`Esto elimina el registro y, si existe, la carpeta generada en disco para "${deleteTarget.domains}". ¿Continuar?`}
-          confirmLabel="Eliminar"
+          title={t.httpServer.deleteTitle}
+          message={t.common.deleteRecordMessage(deleteTarget.domains)}
+          confirmLabel={t.common.delete}
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
         />

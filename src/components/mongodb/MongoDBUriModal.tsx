@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { MongoDBScript } from '../../../electron/shared/databases/mongodb'
+import { useI18n } from '../../contexts/I18nContext'
 import { IconCheck, IconCopy } from '../../icons'
 import { Modal } from '../modals/Modal'
 import { buildMongoDBUri, type MongoDBUriScheme } from './buildMongoDBUri'
@@ -10,6 +11,7 @@ interface MongoDBUriModalProps {
 }
 
 export function MongoDBUriModal({ script, onClose }: MongoDBUriModalProps) {
+  const { t } = useI18n()
   const [scheme, setScheme] = useState<MongoDBUriScheme>('mongodb')
   const [hosts, setHosts] = useState('localhost:27017')
   const [replicaSet, setReplicaSet] = useState('')
@@ -41,24 +43,24 @@ export function MongoDBUriModal({ script, onClose }: MongoDBUriModalProps) {
 
   return (
     <Modal
-      title="MongoDB — Generar URI de conexión"
+      title={t.mongodb.uri.title}
       onClose={onClose}
       footer={(requestClose) => (
         <button type="button" className="btn" onClick={() => requestClose()}>
-          Cerrar
+          {t.common.close}
         </button>
       )}
     >
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Esquema</label>
+          <label className="form-label">{t.mongodb.uri.scheme}</label>
           <select className="text-input" value={scheme} onChange={(event) => setScheme(event.target.value as MongoDBUriScheme)}>
-            <option value="mongodb">mongodb:// (estándar, admite varios hosts)</option>
-            <option value="mongodb+srv">mongodb+srv:// (DNS seedlist, ej: Atlas)</option>
+            <option value="mongodb">{t.mongodb.uri.schemeStandard}</option>
+            <option value="mongodb+srv">{t.mongodb.uri.schemeSrv}</option>
           </select>
         </div>
         <div className="form-group">
-          <label className="form-label">{scheme === 'mongodb+srv' ? 'Host (sin puerto)' : 'Host(s):puerto'}</label>
+          <label className="form-label">{scheme === 'mongodb+srv' ? t.mongodb.uri.hostSrv : t.mongodb.uri.hostsStandard}</label>
           <input
             className="text-input"
             type="text"
@@ -70,11 +72,11 @@ export function MongoDBUriModal({ script, onClose }: MongoDBUriModalProps) {
       </div>
 
       <div className="form-group">
-        <label className="form-label">Replica set (opcional)</label>
+        <label className="form-label">{t.mongodb.uri.replicaSet}</label>
         <input
           className="text-input"
           type="text"
-          placeholder="Ej: rs0 — dejar vacío si no aplica (con mongodb+srv normalmente no hace falta)"
+          placeholder={t.mongodb.uri.replicaSetPlaceholder}
           value={replicaSet}
           onChange={(event) => setReplicaSet(event.target.value)}
         />
@@ -82,7 +84,7 @@ export function MongoDBUriModal({ script, onClose }: MongoDBUriModalProps) {
 
       <label className="radio-row">
         <input type="checkbox" checked={tls} onChange={(event) => setTls(event.target.checked)} />
-        Habilitar TLS (<code>tls=true</code>)
+        {t.mongodb.uri.enableTls}
       </label>
       <label className="radio-row">
         <input
@@ -90,12 +92,11 @@ export function MongoDBUriModal({ script, onClose }: MongoDBUriModalProps) {
           checked={retryWritesMajority}
           onChange={(event) => setRetryWritesMajority(event.target.checked)}
         />
-        <code>retryWrites=true&amp;w=majority</code> — solo válido contra un replica set o cluster; falla contra un mongod
-        standalone
+        {t.mongodb.uri.retryWrites}
       </label>
 
       <div className="form-group" style={{ marginTop: 12 }}>
-        <label className="form-label">URI generada</label>
+        <label className="form-label">{t.mongodb.uri.generatedUri}</label>
         <div className="field-row">
           <input
             className="text-input"
@@ -106,7 +107,7 @@ export function MongoDBUriModal({ script, onClose }: MongoDBUriModalProps) {
           />
           <button type="button" className="btn btn-sm" onClick={handleCopy}>
             {copied ? <IconCheck /> : <IconCopy />}
-            {copied ? 'Copiado' : 'Copiar'}
+            {copied ? t.common.copied : t.common.copy}
           </button>
         </div>
       </div>

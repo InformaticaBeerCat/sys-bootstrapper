@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { SiMongodb, SiMongodbHex } from '@icons-pack/react-simple-icons'
 import type { MongoDBScript, MongoDBScriptInput } from '../../../electron/shared/databases/mongodb'
+import { useI18n } from '../../contexts/I18nContext'
 import { useToast } from '../../contexts/ToastContext'
 import { IconEdit, IconEye, IconFolderOpen, IconLink, IconPlus, IconTable, IconTools, IconTrash } from '../../icons'
 import { ConfirmModal } from '../modals/ConfirmModal'
@@ -17,6 +18,7 @@ interface MongoDBViewProps {
 
 export function MongoDBView({ initialScripts }: MongoDBViewProps) {
   const { showToast } = useToast()
+  const { t } = useI18n()
   const [scripts, setScripts] = useState<MongoDBScript[]>(initialScripts)
   const [formState, setFormState] = useState<FormState | null>(null)
   const [showScript, setShowScript] = useState<MongoDBScript | null>(null)
@@ -29,15 +31,15 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
       if (formState?.mode === 'edit') {
         const updated = await window.sysBootstrapper.mongodb.update(formState.script.id, values)
         setScripts(updated)
-        showToast('Script editado exitosamente.', 'success')
+        showToast(t.database.edited, 'success')
       } else {
         const updated = await window.sysBootstrapper.mongodb.add(values)
         setScripts(updated)
-        showToast('Script creado exitosamente.', 'success')
+        showToast(t.database.created, 'success')
       }
       setFormState(null)
     } catch {
-      showToast('No se pudo guardar el script.', 'danger')
+      showToast(t.database.saveError, 'danger')
     }
   }
 
@@ -46,9 +48,9 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
     try {
       const updated = await window.sysBootstrapper.mongodb.removeAt(deleteTarget.id)
       setScripts(updated)
-      showToast('Script eliminado exitosamente.', 'success')
+      showToast(t.database.deleted, 'success')
     } catch {
-      showToast('No se pudo eliminar el script.', 'danger')
+      showToast(t.database.deleteError, 'danger')
     } finally {
       setDeleteTarget(null)
     }
@@ -66,7 +68,7 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
         </span>
         <div>
           <h1 className="view-title">MongoDB</h1>
-          <p className="view-description">Scripts mongosh para crear base, usuario y roles en MongoDB.</p>
+          <p className="view-description">{t.mongodb.description}</p>
         </div>
       </div>
 
@@ -77,14 +79,14 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
             Scripts
           </h2>
           <div className="comp-row">
-            <span className="badge badge-neutral">{scripts.length} registro(s)</span>
+            <span className="badge badge-neutral">{t.common.records(scripts.length)}</span>
             <button type="button" className="btn btn-sm" onClick={handleOpenScriptsDir}>
               <IconFolderOpen />
-              Abrir directorio
+              {t.common.openDirectory}
             </button>
             <button type="button" className="btn btn-primary btn-sm" onClick={() => setFormState({ mode: 'create' })}>
               <IconPlus />
-              Nueva
+              {t.common.new}
             </button>
           </div>
         </div>
@@ -94,20 +96,20 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
             <table>
               <thead>
                 <tr>
-                  <th>Base de datos</th>
-                  <th>Usuario</th>
+                  <th>{t.database.database}</th>
+                  <th>{t.database.user}</th>
                   <th>Auth DB</th>
                   <th>Roles</th>
                   <th>Preset</th>
                   <th>bindIp</th>
-                  <th>Acciones</th>
+                  <th>{t.common.actions}</th>
                 </tr>
               </thead>
               <tbody>
                 {scripts.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="table-empty">
-                      No hay scripts registrados — usa "Nueva" para agregar el primero.
+                      {t.database.empty}
                     </td>
                   </tr>
                 ) : (
@@ -117,13 +119,13 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
                       <td>{script.userName}</td>
                       <td>{script.authDb}</td>
                       <td>{script.roles}</td>
-                      <td>{script.preset}</td>
+                      <td>{t.database.presets[script.preset]}</td>
                       <td>{script.bindIp}</td>
                       <td>
                         <div className="row-actions">
                           <button type="button" className="btn btn-xs" onClick={() => setShowScript(script)}>
                             <IconEye />
-                            Ver
+                            {t.common.view}
                           </button>
                           <button
                             type="button"
@@ -131,21 +133,21 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
                             onClick={() => setFormState({ mode: 'edit', script })}
                           >
                             <IconEdit />
-                            Editar
+                            {t.common.edit}
                           </button>
                           <button type="button" className="btn btn-xs" onClick={() => setSqlScript(script)}>
                             <IconTools />
-                            Generar .js
+                            {t.common.generate('.js')}
                           </button>
                           <button type="button" className="btn btn-xs" onClick={() => setUriScript(script)}>
                             <IconLink />
-                            Generar URI
+                            {t.common.generate('URI')}
                           </button>
                           <button
                             type="button"
                             className="btn btn-danger btn-xs"
                             onClick={() => setDeleteTarget(script)}
-                            aria-label="Eliminar script"
+                            aria-label={t.database.deleteTitle}
                           >
                             <IconTrash />
                           </button>
@@ -177,9 +179,9 @@ export function MongoDBView({ initialScripts }: MongoDBViewProps) {
 
       {deleteTarget && (
         <ConfirmModal
-          title="Eliminar script"
-          message={`Esto elimina el registro y, si existe, la carpeta generada en disco para "${deleteTarget.dbName}". ¿Continuar?`}
-          confirmLabel="Eliminar"
+          title={t.database.deleteTitle}
+          message={t.common.deleteRecordMessage(deleteTarget.dbName)}
+          confirmLabel={t.common.delete}
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
         />

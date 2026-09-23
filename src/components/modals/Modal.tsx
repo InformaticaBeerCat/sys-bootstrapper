@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useI18n } from '../../contexts/I18nContext'
 
 const CLOSE_ANIMATION_MS = 200
 
@@ -12,6 +13,7 @@ interface ModalProps {
 }
 
 export function Modal({ title, onClose, children, footer, size = 'sm' }: ModalProps) {
+  const { t } = useI18n()
   const [closing, setClosing] = useState(false)
   const closingRef = useRef(false)
 
@@ -43,7 +45,7 @@ export function Modal({ title, onClose, children, footer, size = 'sm' }: ModalPr
       >
         <div className="modal-header">
           <h2 className="modal-title">{title}</h2>
-          <button type="button" className="modal-close" onClick={() => requestClose()} aria-label="Cerrar">
+          <button type="button" className="modal-close" onClick={() => requestClose()} aria-label={t.common.close}>
             ×
           </button>
         </div>

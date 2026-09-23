@@ -6,6 +6,7 @@ import mongodb from 'react-syntax-highlighter/dist/esm/languages/prism/mongodb'
 import nginx from 'react-syntax-highlighter/dist/esm/languages/prism/nginx'
 import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql'
 import caddyfile from './languages/caddyfile'
+import { useI18n } from '../../contexts/I18nContext'
 import { IconCheck, IconCopy } from '../../icons'
 
 /**
@@ -26,6 +27,7 @@ interface CodeBlockProps {
 }
 
 export function CodeBlock({ code, language }: CodeBlockProps) {
+  const { t } = useI18n()
   const [copied, setCopied] = useState(false)
 
   async function handleCopy() {
@@ -42,7 +44,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
     <div className="code-block">
       <button type="button" className="code-copy-btn" onClick={handleCopy}>
         {copied ? <IconCheck /> : <IconCopy />}
-        {copied ? 'Copiado' : 'Copiar'}
+        {copied ? t.common.copied : t.common.copy}
       </button>
       <SyntaxHighlighter
         language={language}

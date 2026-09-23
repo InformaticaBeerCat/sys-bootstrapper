@@ -1,3 +1,4 @@
+import { useI18n } from '../../contexts/I18nContext'
 import { Modal } from './Modal'
 
 interface ConfirmModalProps {
@@ -9,14 +10,9 @@ interface ConfirmModalProps {
   onCancel: () => void
 }
 
-export function ConfirmModal({
-  title,
-  message,
-  confirmLabel = 'Confirmar',
-  cancelLabel = 'Cancelar',
-  onConfirm,
-  onCancel
-}: ConfirmModalProps) {
+export function ConfirmModal({ title, message, confirmLabel, cancelLabel, onConfirm, onCancel }: ConfirmModalProps) {
+  const { t } = useI18n()
+
   return (
     <Modal
       title={title}
@@ -24,10 +20,10 @@ export function ConfirmModal({
       footer={(requestClose) => (
         <>
           <button type="button" className="btn" onClick={() => requestClose(onCancel)}>
-            {cancelLabel}
+            {cancelLabel ?? t.common.cancel}
           </button>
           <button type="button" className="btn btn-primary" onClick={() => requestClose(onConfirm)}>
-            {confirmLabel}
+            {confirmLabel ?? t.common.confirm}
           </button>
         </>
       )}

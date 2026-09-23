@@ -13,6 +13,7 @@ import {
   faGaugeHigh,
   faGear,
   faGlobe,
+  faLanguage,
   faLink,
   faNetworkWired,
   faPenToSquare,
@@ -119,4 +120,8 @@ export function IconRefresh(props: IconProps) {
 
 export function IconShield(props: IconProps) {
   return <FontAwesomeIcon icon={faShieldHalved} {...props} />
+}
+
+export function IconLanguage(props: IconProps) {
+  return <FontAwesomeIcon icon={faLanguage} {...props} />
 }

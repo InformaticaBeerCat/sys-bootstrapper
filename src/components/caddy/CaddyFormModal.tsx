@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { CaddyMode, CaddyServerInput, CaddyTlsMode } from '../../../electron/shared/http-servers/caddy'
+import { useI18n } from '../../contexts/I18nContext'
+import type { Dictionary } from '../../i18n'
 import { Modal } from '../modals/Modal'
 
 const DOMAIN_REGEX = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -11,20 +13,20 @@ interface CaddyFormModalProps {
   onSave: (values: CaddyServerInput) => void
 }
 
-function validate(values: CaddyServerInput): string | null {
+function validate(values: CaddyServerInput, t: Dictionary): string | null {
   const domainsList = values.domains
     .split(',')
     .map((domain) => domain.trim())
     .filter((domain) => domain.length > 0)
 
-  if (domainsList.length === 0) return 'Debes ingresar al menos un dominio.'
+  if (domainsList.length === 0) return t.httpServer.validation.domainRequired
   if (domainsList.some((domain) => !DOMAIN_REGEX.test(domain))) {
-    return 'Todos los dominios deben tener formato válido (ej: midominio.com).'
+    return t.httpServer.validation.domainFormat
   }
-  if (values.mode === 'static' && !values.path.trim()) return 'El path del sitio (root) es obligatorio.'
-  if (values.mode === 'proxy' && !values.proxyTarget.trim()) return 'El destino del reverse_proxy es obligatorio.'
+  if (values.mode === 'static' && !values.path.trim()) return t.caddy.pathRequired
+  if (values.mode === 'proxy' && !values.proxyTarget.trim()) return t.caddy.proxyRequired
   if (values.tls === 'custom' && (!values.tlsCustomCert?.trim() || !values.tlsCustomKey?.trim())) {
-    return 'Debes ingresar la ruta del certificado y la clave privada.'
+    return t.httpServer.validation.certRequired
   }
   return null
 }
@@ -41,6 +43,7 @@ const EMPTY_VALUES: CaddyServerInput = {
 }
 
 export function CaddyFormModal({ mode, initialValues, onCancel, onSave }: CaddyFormModalProps) {
+  const { t } = useI18n()
   const [values, setValues] = useState<CaddyServerInput>(initialValues ?? EMPTY_VALUES)
 
   useEffect(() => {
@@ -63,7 +66,7 @@ export function CaddyFormModal({ mode, initialValues, onCancel, onSave }: CaddyF
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.tls, values.mode])
 
-  const error = validate(values)
+  const error = validate(values, t)
   const showTlsCustom = values.tls === 'custom'
 
   function update<K extends keyof CaddyServerInput>(key: K, value: CaddyServerInput[K]) {
@@ -72,13 +75,13 @@ export function CaddyFormModal({ mode, initialValues, onCancel, onSave }: CaddyF
 
   return (
     <Modal
-      title={mode === 'create' ? 'Nueva configuración Caddy' : 'Editar configuración Caddy'}
+      title={mode === 'create' ? t.httpServer.newTitle('Caddy') : t.httpServer.editTitle('Caddy')}
       onClose={onCancel}
       size="lg"
       footer={(requestClose) => (
         <>
           <button type="button" className="btn" onClick={() => requestClose(onCancel)}>
-            Cancelar
+            {t.common.cancel}
           </button>
           <button
             type="button"
@@ -86,18 +89,18 @@ export function CaddyFormModal({ mode, initialValues, onCancel, onSave }: CaddyF
             disabled={!!error}
             onClick={() => requestClose(() => onSave(values))}
           >
-            {mode === 'create' ? 'Crear' : 'Guardar cambios'}
+            {mode === 'create' ? t.common.create : t.common.saveChanges}
           </button>
         </>
       )}
     >
       <div className="form-row form-row-1">
         <div className="form-group">
-          <label className="form-label">Dominios (separados por coma)</label>
+          <label className="form-label">{t.httpServer.domainsInput}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="Ej: midominio.com, www.otrodominio.com"
+            placeholder={t.httpServer.domainsPlaceholder}
             value={values.domains}
             onChange={(event) => update('domains', event.target.value)}
           />
@@ -108,33 +111,33 @@ export function CaddyFormModal({ mode, initialValues, onCancel, onSave }: CaddyF
         <div>
           <label className="radio-row">
             <input type="radio" checked={values.mode === 'static'} onChange={() => update('mode', 'static' as CaddyMode)} />
-            Servir archivos estáticos (root * + file_server)
+            {t.caddy.serveStatic}
           </label>
           <label className="radio-row">
             <input type="radio" checked={values.mode === 'proxy'} onChange={() => update('mode', 'proxy' as CaddyMode)} />
-            Usar proxy inverso (reverse_proxy)
+            {t.caddy.useReverseProxy}
           </label>
         </div>
       </div>
 
       <div className="form-row">
         <div className="form-group">
-          <label className="form-label">Path del sitio (root)</label>
+          <label className="form-label">{t.caddy.pathInput}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="Ej: /var/www/html, /srv/misitio"
+            placeholder={t.httpServer.pathPlaceholder}
             value={values.path}
             onChange={(event) => update('path', event.target.value)}
             disabled={values.mode === 'proxy'}
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Proxy destino (IP:PUERTO)</label>
+          <label className="form-label">{t.httpServer.proxyTargetInput}</label>
           <input
             className="text-input"
             type="text"
-            placeholder="Ej: 127.0.0.1:3000, api.midominio.com:8080"
+            placeholder={t.httpServer.proxyTargetPlaceholder}
             value={values.proxyTarget}
             onChange={(event) => update('proxyTarget', event.target.value)}
             disabled={values.mode === 'static'}
@@ -150,10 +153,10 @@ export function CaddyFormModal({ mode, initialValues, onCancel, onSave }: CaddyF
             value={values.tls}
             onChange={(event) => update('tls', event.target.value as CaddyTlsMode)}
           >
-            <option value="auto">Automático (Let's Encrypt, por defecto)</option>
-            <option value="internal">Interno (autofirmado, para dominios locales)</option>
-            <option value="custom">Personalizado</option>
-            <option value="off">Desactivado (solo HTTP)</option>
+            <option value="auto">{t.caddy.tlsOptions.auto}</option>
+            <option value="internal">{t.caddy.tlsOptions.internal}</option>
+            <option value="custom">{t.caddy.tlsOptions.custom}</option>
+            <option value="off">{t.caddy.tlsOptions.off}</option>
           </select>
         </div>
         <label className="check-row" style={{ alignSelf: 'end' }}>
@@ -162,28 +165,28 @@ export function CaddyFormModal({ mode, initialValues, onCancel, onSave }: CaddyF
             checked={values.encodeGzip}
             onChange={(event) => update('encodeGzip', event.target.checked)}
           />
-          Comprimir respuestas (encode zstd gzip)
+          {t.caddy.compressResponses}
         </label>
       </div>
 
       {showTlsCustom && (
         <div className="form-row">
           <div className="form-group">
-            <label className="form-label">Ruta del certificado (.crt/.pem)</label>
+            <label className="form-label">{t.httpServer.certPathInput}</label>
             <input
               className="text-input"
               type="text"
-              placeholder="Ej: /etc/ssl/certs/misitio.pem"
+              placeholder={t.httpServer.certPathPlaceholder}
               value={values.tlsCustomCert ?? ''}
               onChange={(event) => update('tlsCustomCert', event.target.value)}
             />
           </div>
           <div className="form-group">
-            <label className="form-label">Ruta de la clave privada (.key)</label>
+            <label className="form-label">{t.httpServer.keyPathInput}</label>
             <input
               className="text-input"
               type="text"
-              placeholder="Ej: /etc/ssl/private/misitio.key"
+              placeholder={t.httpServer.keyPathPlaceholder}
               value={values.tlsCustomKey ?? ''}
               onChange={(event) => update('tlsCustomKey', event.target.value)}
             />

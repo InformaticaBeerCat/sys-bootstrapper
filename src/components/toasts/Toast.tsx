@@ -1,3 +1,4 @@
+import { useI18n } from '../../contexts/I18nContext'
 import { IconAlert, IconCheckCircle, IconInfo, IconXCircle } from '../../icons'
 import type { ToastVariant } from '../../contexts/ToastContext'
 
@@ -16,13 +17,14 @@ interface ToastProps {
 }
 
 export function Toast({ variant, message, leaving, onDismiss }: ToastProps) {
+  const { t } = useI18n()
   const Icon = VARIANT_ICON[variant]
 
   return (
     <div className={`toast toast-${variant}${leaving ? ' toast-leaving' : ''}`} role="status">
       <Icon className="toast-icon" />
       <span className="toast-message">{message}</span>
-      <button type="button" className="toast-close" onClick={onDismiss} aria-label="Cerrar notificación">
+      <button type="button" className="toast-close" onClick={onDismiss} aria-label={t.common.closeNotification}>
         ×
       </button>
     </div>
