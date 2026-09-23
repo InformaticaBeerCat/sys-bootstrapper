@@ -13,9 +13,6 @@ export type ViewId =
   | 'db-mysql'
   | 'db-postgresql'
   | 'db-mongodb'
-  | 'db-redis'
-  | 'db-sqlite'
-  | 'db-mariadb'
 
 interface NavEntry {
   id: ViewId

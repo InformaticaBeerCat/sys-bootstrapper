@@ -9,9 +9,7 @@ import { CaddyView } from './components/caddy/CaddyView'
 import { MySQLView } from './components/mysql/MySQLView'
 import { PostgreSQLView } from './components/postgresql/PostgreSQLView'
 import { MongoDBView } from './components/mongodb/MongoDBView'
-import { ToolRecordsView } from './components/records/ToolRecordsView'
 import { TopLoadingBar } from './components/TopLoadingBar'
-import { findTool } from './data/tools'
 import type { AppConfig } from '../electron/shared/config'
 import type { ApacheServer } from '../electron/shared/http-servers/apache'
 import type { NginxServer } from '../electron/shared/http-servers/nginx'
@@ -88,10 +86,8 @@ function renderView(view: ViewId, data: ViewData, onNavigate: (view: ViewId) => 
       return <PostgreSQLView initialScripts={data.postgresql ?? []} />
     case 'db-mongodb':
       return <MongoDBView initialScripts={data.mongodb ?? []} />
-    default: {
-      const tool = findTool(view)
-      return tool ? <ToolRecordsView tool={tool} /> : <DashboardView config={data.config ?? null} onNavigate={onNavigate} />
-    }
+    default:
+      return <DashboardView config={data.config ?? null} onNavigate={onNavigate} />
   }
 }
 
