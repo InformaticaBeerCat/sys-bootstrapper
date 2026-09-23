@@ -9,6 +9,12 @@ interface DashboardViewProps {
   onNavigate: (view: ViewId) => void
 }
 
+const STEPS = [
+  { title: 'Configura tu directorio', text: 'Elige dónde se van a guardar tus configuraciones generadas.' },
+  { title: 'Elige una herramienta', text: 'Servidor HTTP o base de datos, lo que necesites hoy.' },
+  { title: 'Genera y copia', text: 'Completa el formulario y copia el resultado a tu proyecto.' }
+]
+
 export function DashboardView({ config, onNavigate }: DashboardViewProps) {
   const ready = !!config?.workingDirectory
 
@@ -16,17 +22,40 @@ export function DashboardView({ config, onNavigate }: DashboardViewProps) {
     <div className="view view-wide">
       <div className="dash-welcome">
         <IconServer className="dash-welcome-watermark" />
-        <div className="dash-welcome-info">
-          <img className="dash-welcome-mascot" src={logo} alt="BeerCat" />
-          <div>
-            <h2>¡Bienvenido a SYS-BOOTSTRAPPER!</h2>
-            <p>Tu navaja suiza para configurar servidores y bases de datos, todo desde un mismo lugar.</p>
+
+        <div className="dash-welcome-top">
+          <div className="dash-welcome-info">
+            <img className="dash-welcome-mascot" src={logo} alt="BeerCat" />
+            <div>
+              <div className="dash-welcome-title-row">
+                <h2>SYS-BOOTSTRAPPER</h2>
+                <span className="dash-version-badge">v0.1.0</span>
+              </div>
+              <p>Tu navaja suiza para configurar servidores y bases de datos, todo desde un mismo lugar.</p>
+            </div>
           </div>
+          <span className="dash-welcome-badge">
+            {ready ? <IconCheckCircle /> : <IconAlert />}
+            {ready ? 'Directorio configurado' : 'Sin directorio configurado'}
+          </span>
         </div>
-        <span className="dash-welcome-badge">
-          {ready ? <IconCheckCircle /> : <IconAlert />}
-          {ready ? 'Directorio configurado' : 'Sin directorio configurado'}
-        </span>
+
+        <blockquote className="dash-slogan">
+          “Si a mí me sirve, probablemente a ti también te sirva… en alguna weá.”
+        </blockquote>
+      </div>
+
+      <div className="section-title">Primeros pasos</div>
+      <div className="steps">
+        {STEPS.map((step, i) => (
+          <div className="step" key={step.title}>
+            <span className="step-number">{i + 1}</span>
+            <div>
+              <div className="step-title">{step.title}</div>
+              <div className="step-text">{step.text}</div>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="section-title">Resumen</div>
