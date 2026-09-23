@@ -2,7 +2,7 @@ import { BrowserWindow, shell } from 'electron'
 import { join } from 'node:path'
 import { is } from './env'
 
-const appIconPath = is.dev
+export const appIconPath = is.dev
   ? join(__dirname, '../../build/icon.png')
   : join(process.resourcesPath, 'icon.png')
 
