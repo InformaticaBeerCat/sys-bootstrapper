@@ -1,4 +1,5 @@
 import { registerMySQLHandlers } from '../databases/mysql/ipc'
+import { registerPostgreSQLHandlers } from '../databases/postgresql/ipc'
 import { registerApacheHandlers } from '../http-servers/apache/ipc'
 import { registerCaddyHandlers } from '../http-servers/caddy/ipc'
 import { registerNginxHandlers } from '../http-servers/nginx/ipc'
@@ -18,4 +19,5 @@ export function registerIpcHandlers(): void {
   registerNginxHandlers()
   registerCaddyHandlers()
   registerMySQLHandlers()
+  registerPostgreSQLHandlers()
 }

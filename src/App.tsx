@@ -7,6 +7,7 @@ import { ApacheView } from './components/apache/ApacheView'
 import { NginxView } from './components/nginx/NginxView'
 import { CaddyView } from './components/caddy/CaddyView'
 import { MySQLView } from './components/mysql/MySQLView'
+import { PostgreSQLView } from './components/postgresql/PostgreSQLView'
 import { ToolRecordsView } from './components/records/ToolRecordsView'
 import { TopLoadingBar } from './components/TopLoadingBar'
 import { findTool } from './data/tools'
@@ -15,6 +16,7 @@ import type { ApacheServer } from '../electron/shared/http-servers/apache'
 import type { NginxServer } from '../electron/shared/http-servers/nginx'
 import type { CaddyServer } from '../electron/shared/http-servers/caddy'
 import type { MySQLScript } from '../electron/shared/databases/mysql'
+import type { PostgreSQLScript } from '../electron/shared/databases/postgresql'
 
 interface ViewData {
   config?: AppConfig
@@ -24,6 +26,7 @@ interface ViewData {
   nginx?: NginxServer[]
   caddy?: CaddyServer[]
   mysql?: MySQLScript[]
+  postgresql?: PostgreSQLScript[]
 }
 
 /** Trae de una sola vez todo lo que la vista destino necesita, antes de mostrarla. */
@@ -47,6 +50,8 @@ async function loadViewData(view: ViewId): Promise<ViewData> {
       return { caddy: await window.sysBootstrapper.caddy.getAll() }
     case 'db-mysql':
       return { mysql: await window.sysBootstrapper.mysql.getAll() }
+    case 'db-postgresql':
+      return { postgresql: await window.sysBootstrapper.postgresql.getAll() }
     default:
       return {}
   }
@@ -74,6 +79,8 @@ function renderView(view: ViewId, data: ViewData, onNavigate: (view: ViewId) => 
       return <CaddyView initialServers={data.caddy ?? []} />
     case 'db-mysql':
       return <MySQLView initialScripts={data.mysql ?? []} />
+    case 'db-postgresql':
+      return <PostgreSQLView initialScripts={data.postgresql ?? []} />
     default: {
       const tool = findTool(view)
       return tool ? <ToolRecordsView tool={tool} /> : <DashboardView config={data.config ?? null} onNavigate={onNavigate} />

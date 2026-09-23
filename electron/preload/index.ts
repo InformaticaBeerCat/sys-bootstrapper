@@ -1,5 +1,6 @@
 import { contextBridge } from 'electron'
 import { mysqlApi } from './databases/mysql'
+import { postgresqlApi } from './databases/postgresql'
 import { apacheApi } from './http-servers/apache'
 import { caddyApi } from './http-servers/caddy'
 import { nginxApi } from './http-servers/nginx'
@@ -19,7 +20,8 @@ const api = {
   apache: apacheApi,
   nginx: nginxApi,
   caddy: caddyApi,
-  mysql: mysqlApi
+  mysql: mysqlApi,
+  postgresql: postgresqlApi
 }
 
 contextBridge.exposeInMainWorld('sysBootstrapper', api)
