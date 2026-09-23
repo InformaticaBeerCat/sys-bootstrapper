@@ -1,3 +1,4 @@
+import { registerMongoDBHandlers } from '../databases/mongodb/ipc'
 import { registerMySQLHandlers } from '../databases/mysql/ipc'
 import { registerPostgreSQLHandlers } from '../databases/postgresql/ipc'
 import { registerApacheHandlers } from '../http-servers/apache/ipc'
@@ -20,4 +21,5 @@ export function registerIpcHandlers(): void {
   registerCaddyHandlers()
   registerMySQLHandlers()
   registerPostgreSQLHandlers()
+  registerMongoDBHandlers()
 }

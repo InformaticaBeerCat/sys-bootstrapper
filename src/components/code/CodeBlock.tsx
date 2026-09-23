@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import apacheconf from 'react-syntax-highlighter/dist/esm/languages/prism/apacheconf'
+import mongodb from 'react-syntax-highlighter/dist/esm/languages/prism/mongodb'
 import nginx from 'react-syntax-highlighter/dist/esm/languages/prism/nginx'
 import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql'
 import caddyfile from './languages/caddyfile'
@@ -17,6 +18,7 @@ SyntaxHighlighter.registerLanguage('apacheconf', apacheconf)
 SyntaxHighlighter.registerLanguage('nginx', nginx)
 SyntaxHighlighter.registerLanguage('caddyfile', caddyfile)
 SyntaxHighlighter.registerLanguage('sql', sql)
+SyntaxHighlighter.registerLanguage('mongodb', mongodb)
 
 interface CodeBlockProps {
   code: string

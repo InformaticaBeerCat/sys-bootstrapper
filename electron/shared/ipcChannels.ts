@@ -1,3 +1,4 @@
+import { MONGODB_CHANNELS } from './databases/mongodb'
 import { MYSQL_CHANNELS } from './databases/mysql'
 import { POSTGRESQL_CHANNELS } from './databases/postgresql'
 import { APACHE_CHANNELS } from './http-servers/apache'
@@ -24,5 +25,6 @@ export const IPC_CHANNELS = {
   nginx: NGINX_CHANNELS,
   caddy: CADDY_CHANNELS,
   mysql: MYSQL_CHANNELS,
-  postgresql: POSTGRESQL_CHANNELS
+  postgresql: POSTGRESQL_CHANNELS,
+  mongodb: MONGODB_CHANNELS
 } as const
