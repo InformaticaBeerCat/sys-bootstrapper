@@ -4,14 +4,15 @@ import { registerPostgreSQLHandlers } from '../databases/postgresql/ipc'
 import { registerApacheHandlers } from '../http-servers/apache/ipc'
 import { registerCaddyHandlers } from '../http-servers/caddy/ipc'
 import { registerNginxHandlers } from '../http-servers/nginx/ipc'
+import { registerNetworkHandlers } from '../network/ipc'
 import { registerConfigHandlers } from './config'
 import { registerDialogHandlers } from './dialog'
-import { registerNetworkHandlers } from './network'
 
 /**
  * Punto único de registro de handlers IPC. Los dominios de app (config, dialog)
  * viven en `ipc/<dominio>.ts`. Cada tool (servidor HTTP, base de datos, etc.) vive en
- * `main/<categoría>/<tool>/ipc.ts` con su propio `register*Handlers()` y se suma acá,
+ * `main/<categoría>/<tool>/ipc.ts` con su propio `register*Handlers()` y se suma acá (el módulo de red,
+ * que reparte su lógica en varios archivos, vive en `main/network/`),
  * para no mezclar infra de app con lógica específica de cada herramienta.
  */
 export function registerIpcHandlers(): void {

@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
 import { useI18n } from '../contexts/I18nContext'
-import { IconDashboard, IconInfo, IconSettings } from '../icons'
+import { IconDashboard, IconInfo, IconNetwork, IconSettings } from '../icons'
 import { DATABASES, HTTP_SERVERS } from '../data/tools'
 import type { Dictionary } from '../i18n'
 import logo from '../assets/logo.png'
 
 export type ViewId =
   | 'dashboard'
+  | 'network'
   | 'about'
   | 'settings'
   | 'http-apache'
@@ -51,6 +52,11 @@ function buildNavGroups(t: Dictionary): NavGroup[] {
         label: tool.name,
         icon: <tool.Logo size={16} color={tool.brandColor} title={tool.name} />
       }))
+    },
+    {
+      key: 'system',
+      label: t.nav.system,
+      items: [{ id: 'network', label: t.nav.network, icon: <IconNetwork /> }]
     },
     {
       key: 'general',

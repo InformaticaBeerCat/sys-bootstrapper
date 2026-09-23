@@ -7,23 +7,34 @@ import {
   faCircleXmark,
   faCopy,
   faDatabase,
+  faEthernet,
   faEye,
+  faFileExport,
   faFolder,
   faFolderOpen,
   faGaugeHigh,
   faGear,
   faGlobe,
   faLanguage,
+  faLaptop,
   faLink,
+  faLock,
+  faMagnifyingGlass,
   faNetworkWired,
   faPenToSquare,
+  faPlug,
   faPlus,
+  faRoute,
   faScrewdriverWrench,
   faServer,
   faShieldHalved,
+  faSignal,
+  faSitemap,
+  faStethoscope,
   faTable,
   faTrash,
-  faTriangleExclamation
+  faTriangleExclamation,
+  faWifi
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface IconProps {
@@ -124,4 +135,48 @@ export function IconShield(props: IconProps) {
 
 export function IconLanguage(props: IconProps) {
   return <FontAwesomeIcon icon={faLanguage} {...props} />
+}
+
+export function IconEthernet(props: IconProps) {
+  return <FontAwesomeIcon icon={faEthernet} {...props} />
+}
+
+export function IconWifi(props: IconProps) {
+  return <FontAwesomeIcon icon={faWifi} {...props} />
+}
+
+export function IconLock(props: IconProps) {
+  return <FontAwesomeIcon icon={faLock} {...props} />
+}
+
+export function IconLaptop(props: IconProps) {
+  return <FontAwesomeIcon icon={faLaptop} {...props} />
+}
+
+export function IconRoute(props: IconProps) {
+  return <FontAwesomeIcon icon={faRoute} {...props} />
+}
+
+export function IconSignal(props: IconProps) {
+  return <FontAwesomeIcon icon={faSignal} {...props} />
+}
+
+export function IconStethoscope(props: IconProps) {
+  return <FontAwesomeIcon icon={faStethoscope} {...props} />
+}
+
+export function IconPlug(props: IconProps) {
+  return <FontAwesomeIcon icon={faPlug} {...props} />
+}
+
+export function IconFileExport(props: IconProps) {
+  return <FontAwesomeIcon icon={faFileExport} {...props} />
+}
+
+export function IconSitemap(props: IconProps) {
+  return <FontAwesomeIcon icon={faSitemap} {...props} />
+}
+
+export function IconMagnifyingGlass(props: IconProps) {
+  return <FontAwesomeIcon icon={faMagnifyingGlass} {...props} />
 }

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import type { PrivateIpInfo, PublicIpInfo } from '../../../electron/shared/network'
 import { useI18n } from '../../contexts/I18nContext'
 import { IconCheck, IconCopy, IconGlobe, IconNetwork, IconRefresh, IconShield } from '../../icons'
+import { useCopyToClipboard } from './hooks'
 
 type BadgeTone = 'warning' | 'neutral'
 
@@ -14,22 +15,6 @@ interface IpCardProps {
   badge?: { label: string; tone: BadgeTone } | null
   loading: boolean
   onRefresh: () => void
-}
-
-function useCopyToClipboard(): [boolean, (text: string) => void] {
-  const [copied, setCopied] = useState(false)
-  const copy = useCallback((text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        setCopied(true)
-        setTimeout(() => setCopied(false), 1500)
-      })
-      .catch(() => {
-        // portapapeles no disponible (permisos/plataforma) - el botón simplemente no hace nada
-      })
-  }, [])
-  return [copied, copy]
 }
 
 function IpCard({ icon, title, address, hint, errorMessage, badge, loading, onRefresh }: IpCardProps) {

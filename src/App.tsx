@@ -9,6 +9,7 @@ import { CaddyView } from './components/caddy/CaddyView'
 import { MySQLView } from './components/mysql/MySQLView'
 import { PostgreSQLView } from './components/postgresql/PostgreSQLView'
 import { MongoDBView } from './components/mongodb/MongoDBView'
+import { NetworkView } from './components/network/NetworkView'
 import { TopLoadingBar } from './components/TopLoadingBar'
 import type { AppConfig } from '../electron/shared/config'
 import type { ApacheServer } from '../electron/shared/http-servers/apache'
@@ -17,6 +18,7 @@ import type { CaddyServer } from '../electron/shared/http-servers/caddy'
 import type { MySQLScript } from '../electron/shared/databases/mysql'
 import type { PostgreSQLScript } from '../electron/shared/databases/postgresql'
 import type { MongoDBScript } from '../electron/shared/databases/mongodb'
+import type { NetworkOverview } from '../electron/shared/network'
 
 interface ViewData {
   config?: AppConfig
@@ -28,6 +30,7 @@ interface ViewData {
   mysql?: MySQLScript[]
   postgresql?: PostgreSQLScript[]
   mongodb?: MongoDBScript[]
+  network?: NetworkOverview
 }
 
 /** Trae de una sola vez todo lo que la vista destino necesita, antes de mostrarla. */
@@ -55,6 +58,8 @@ async function loadViewData(view: ViewId): Promise<ViewData> {
       return { postgresql: await window.sysBootstrapper.postgresql.getAll() }
     case 'db-mongodb':
       return { mongodb: await window.sysBootstrapper.mongodb.getAll() }
+    case 'network':
+      return { network: await window.sysBootstrapper.network.getOverview() }
     default:
       return {}
   }
@@ -86,6 +91,8 @@ function renderView(view: ViewId, data: ViewData, onNavigate: (view: ViewId) => 
       return <PostgreSQLView initialScripts={data.postgresql ?? []} />
     case 'db-mongodb':
       return <MongoDBView initialScripts={data.mongodb ?? []} />
+    case 'network':
+      return <NetworkView initialOverview={data.network ?? null} />
     default:
       return <DashboardView config={data.config ?? null} onNavigate={onNavigate} />
   }

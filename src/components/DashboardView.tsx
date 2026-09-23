@@ -92,7 +92,12 @@ export function DashboardView({ config, onNavigate }: DashboardViewProps) {
         </div>
       </div>
 
-      <div className="section-title">{t.dashboard.network}</div>
+      <div className="section-title">
+        {t.dashboard.network}
+        <button type="button" className="btn btn-xs section-title-action" onClick={() => onNavigate('network')}>
+          {t.dashboard.openNetwork}
+        </button>
+      </div>
       <NetworkStatusCards />
 
       <div className="section-title">{t.dashboard.quickAccess}</div>

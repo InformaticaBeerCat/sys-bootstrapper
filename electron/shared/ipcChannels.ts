@@ -4,6 +4,7 @@ import { POSTGRESQL_CHANNELS } from './databases/postgresql'
 import { APACHE_CHANNELS } from './http-servers/apache'
 import { CADDY_CHANNELS } from './http-servers/caddy'
 import { NGINX_CHANNELS } from './http-servers/nginx'
+import { NETWORK_CHANNELS } from './network'
 
 /**
  * Punto único de agregación de canales IPC. Los dominios de app (config, dialog)
@@ -22,10 +23,7 @@ export const IPC_CHANNELS = {
   dialog: {
     selectDirectory: 'dialog:select-directory'
   },
-  network: {
-    getPrivateIp: 'network:get-private-ip',
-    getPublicIp: 'network:get-public-ip'
-  },
+  network: NETWORK_CHANNELS,
   apache: APACHE_CHANNELS,
   nginx: NGINX_CHANNELS,
   caddy: CADDY_CHANNELS,
