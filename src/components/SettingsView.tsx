@@ -7,9 +7,10 @@ import { useToast } from '../contexts/ToastContext'
 interface SettingsViewProps {
   config: AppConfig | null
   configPath: string
+  defaultWorkingDirectory: string
 }
 
-export function SettingsView({ config: initialConfig, configPath }: SettingsViewProps) {
+export function SettingsView({ config: initialConfig, configPath, defaultWorkingDirectory }: SettingsViewProps) {
   const { showToast } = useToast()
   const [config, setConfig] = useState<AppConfig | null>(initialConfig)
   const [saving, setSaving] = useState(false)
@@ -96,10 +97,17 @@ export function SettingsView({ config: initialConfig, configPath }: SettingsView
             Directorio configurado{savedAt ? ' y guardado' : ''}.
           </div>
         ) : (
-          <div className="status-line warn">
-            <IconAlert />
-            Aún no se ha elegido un directorio de trabajo.
-          </div>
+          <>
+            <div className="status-line warn">
+              <IconAlert />
+              Aún no se ha elegido un directorio de trabajo.
+            </div>
+            {defaultWorkingDirectory && (
+              <p className="panel-hint">
+                Se utilizará <code>{defaultWorkingDirectory}</code> por defecto.
+              </p>
+            )}
+          </>
         )}
       </div>
 

@@ -839,6 +839,10 @@ select.text-input {
   color: var(--warning-text);
 }
 
+.status-line + .panel-hint {
+  margin-top: 8px;
+}
+
 .meta-list {
   display: flex;
   flex-direction: column;
@@ -847,7 +851,8 @@ select.text-input {
   color: var(--text-muted);
 }
 
-.meta-list code {
+.meta-list code,
+.panel-hint code {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text);

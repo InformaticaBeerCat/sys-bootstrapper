@@ -19,6 +19,7 @@ import type { MySQLScript } from '../electron/shared/databases/mysql'
 interface ViewData {
   config?: AppConfig
   configPath?: string
+  defaultWorkingDirectory?: string
   apache?: ApacheServer[]
   nginx?: NginxServer[]
   caddy?: CaddyServer[]
@@ -31,11 +32,12 @@ async function loadViewData(view: ViewId): Promise<ViewData> {
     case 'dashboard':
       return { config: await window.sysBootstrapper.config.get() }
     case 'settings': {
-      const [config, configPath] = await Promise.all([
+      const [config, configPath, defaultWorkingDirectory] = await Promise.all([
         window.sysBootstrapper.config.get(),
-        window.sysBootstrapper.config.getPath()
+        window.sysBootstrapper.config.getPath(),
+        window.sysBootstrapper.config.getDefaultWorkingDirectory()
       ])
-      return { config, configPath }
+      return { config, configPath, defaultWorkingDirectory }
     }
     case 'http-apache':
       return { apache: await window.sysBootstrapper.apache.getAll() }
@@ -57,7 +59,13 @@ function renderView(view: ViewId, data: ViewData, onNavigate: (view: ViewId) => 
     case 'about':
       return <AboutView />
     case 'settings':
-      return <SettingsView config={data.config ?? null} configPath={data.configPath ?? ''} />
+      return (
+        <SettingsView
+          config={data.config ?? null}
+          configPath={data.configPath ?? ''}
+          defaultWorkingDirectory={data.defaultWorkingDirectory ?? ''}
+        />
+      )
     case 'http-apache':
       return <ApacheView initialServers={data.apache ?? []} />
     case 'http-nginx':

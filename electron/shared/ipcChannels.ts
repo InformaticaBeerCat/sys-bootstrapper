@@ -13,6 +13,7 @@ export const IPC_CHANNELS = {
   config: {
     get: 'config:get',
     getPath: 'config:get-path',
+    getDefaultWorkingDirectory: 'config:get-default-working-directory',
     setWorkingDirectory: 'config:set-working-directory'
   },
   dialog: {
