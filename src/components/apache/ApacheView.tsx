@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SiApache, SiApacheHex } from '@icons-pack/react-simple-icons'
 import type { ApacheServer, ApacheServerInput } from '../../../electron/shared/http-servers/apache'
 import { useToast } from '../../contexts/ToastContext'
@@ -10,21 +10,17 @@ import { ApacheShowModal } from './ApacheShowModal'
 
 type FormState = { mode: 'create' } | { mode: 'edit'; server: ApacheServer }
 
-export function ApacheView() {
+interface ApacheViewProps {
+  initialServers: ApacheServer[]
+}
+
+export function ApacheView({ initialServers }: ApacheViewProps) {
   const { showToast } = useToast()
-  const [servers, setServers] = useState<ApacheServer[]>([])
-  const [loading, setLoading] = useState(true)
+  const [servers, setServers] = useState<ApacheServer[]>(initialServers)
   const [formState, setFormState] = useState<FormState | null>(null)
   const [showServer, setShowServer] = useState<ApacheServer | null>(null)
   const [confServer, setConfServer] = useState<ApacheServer | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<ApacheServer | null>(null)
-
-  useEffect(() => {
-    window.sysBootstrapper.apache
-      .getAll()
-      .then(setServers)
-      .finally(() => setLoading(false))
-  }, [])
 
   async function handleSave(values: ApacheServerInput) {
     try {
@@ -111,7 +107,7 @@ export function ApacheView() {
                 {servers.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="table-empty">
-                      {loading ? 'Cargando…' : 'No hay configuraciones registradas — usa "Nueva" para agregar la primera.'}
+                      No hay configuraciones registradas — usa "Nueva" para agregar la primera.
                     </td>
                   </tr>
                 ) : (

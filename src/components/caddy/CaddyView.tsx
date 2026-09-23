@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SiCaddy, SiCaddyHex } from '@icons-pack/react-simple-icons'
 import type { CaddyServer, CaddyServerInput } from '../../../electron/shared/http-servers/caddy'
 import { useToast } from '../../contexts/ToastContext'
@@ -17,21 +17,17 @@ const TLS_LABELS: Record<CaddyServer['tls'], string> = {
 
 type FormState = { mode: 'create' } | { mode: 'edit'; server: CaddyServer }
 
-export function CaddyView() {
+interface CaddyViewProps {
+  initialServers: CaddyServer[]
+}
+
+export function CaddyView({ initialServers }: CaddyViewProps) {
   const { showToast } = useToast()
-  const [servers, setServers] = useState<CaddyServer[]>([])
-  const [loading, setLoading] = useState(true)
+  const [servers, setServers] = useState<CaddyServer[]>(initialServers)
   const [formState, setFormState] = useState<FormState | null>(null)
   const [showServer, setShowServer] = useState<CaddyServer | null>(null)
   const [confServer, setConfServer] = useState<CaddyServer | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<CaddyServer | null>(null)
-
-  useEffect(() => {
-    window.sysBootstrapper.caddy
-      .getAll()
-      .then(setServers)
-      .finally(() => setLoading(false))
-  }, [])
 
   async function handleSave(values: CaddyServerInput) {
     try {
@@ -117,7 +113,7 @@ export function CaddyView() {
                 {servers.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="table-empty">
-                      {loading ? 'Cargando…' : 'No hay configuraciones registradas — usa "Nueva" para agregar la primera.'}
+                      No hay configuraciones registradas — usa "Nueva" para agregar la primera.
                     </td>
                   </tr>
                 ) : (

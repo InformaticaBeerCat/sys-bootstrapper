@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import type { AppConfig } from '../../electron/shared/config'
 import { IconAlert, IconCheckCircle, IconDatabase, IconFolder, IconGlobe, IconServer, IconTable } from '../icons'
 import { ALL_TOOLS, DATABASES, HTTP_SERVERS } from '../data/tools'
@@ -6,16 +5,11 @@ import type { ViewId } from './Sidebar'
 import logo from '../assets/logo.png'
 
 interface DashboardViewProps {
+  config: AppConfig | null
   onNavigate: (view: ViewId) => void
 }
 
-export function DashboardView({ onNavigate }: DashboardViewProps) {
-  const [config, setConfig] = useState<AppConfig | null>(null)
-
-  useEffect(() => {
-    window.sysBootstrapper.config.get().then(setConfig)
-  }, [])
-
+export function DashboardView({ config, onNavigate }: DashboardViewProps) {
   const ready = !!config?.workingDirectory
 
   return (

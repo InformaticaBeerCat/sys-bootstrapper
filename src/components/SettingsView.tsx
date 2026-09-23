@@ -1,21 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { AppConfig } from '../../electron/shared/config'
 import { IconAlert, IconCheckCircle, IconFolder, IconFolderOpen, IconTrash } from '../icons'
 import { ConfirmModal } from './modals/ConfirmModal'
 import { useToast } from '../contexts/ToastContext'
 
-export function SettingsView() {
+interface SettingsViewProps {
+  config: AppConfig | null
+  configPath: string
+}
+
+export function SettingsView({ config: initialConfig, configPath }: SettingsViewProps) {
   const { showToast } = useToast()
-  const [config, setConfig] = useState<AppConfig | null>(null)
-  const [configPath, setConfigPath] = useState('')
+  const [config, setConfig] = useState<AppConfig | null>(initialConfig)
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<number | null>(null)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
-
-  useEffect(() => {
-    window.sysBootstrapper.config.get().then(setConfig)
-    window.sysBootstrapper.config.getPath().then(setConfigPath)
-  }, [])
 
   async function handleSelectDirectory() {
     const selected = await window.sysBootstrapper.dialog.selectDirectory()

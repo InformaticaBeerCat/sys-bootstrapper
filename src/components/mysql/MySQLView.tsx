@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SiMysql, SiMysqlHex } from '@icons-pack/react-simple-icons'
 import type { MySQLScript, MySQLScriptInput } from '../../../electron/shared/databases/mysql'
 import { useToast } from '../../contexts/ToastContext'
@@ -10,21 +10,17 @@ import { MySQLShowModal } from './MySQLShowModal'
 
 type FormState = { mode: 'create' } | { mode: 'edit'; script: MySQLScript }
 
-export function MySQLView() {
+interface MySQLViewProps {
+  initialScripts: MySQLScript[]
+}
+
+export function MySQLView({ initialScripts }: MySQLViewProps) {
   const { showToast } = useToast()
-  const [scripts, setScripts] = useState<MySQLScript[]>([])
-  const [loading, setLoading] = useState(true)
+  const [scripts, setScripts] = useState<MySQLScript[]>(initialScripts)
   const [formState, setFormState] = useState<FormState | null>(null)
   const [showScript, setShowScript] = useState<MySQLScript | null>(null)
   const [sqlScript, setSqlScript] = useState<MySQLScript | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<MySQLScript | null>(null)
-
-  useEffect(() => {
-    window.sysBootstrapper.mysql
-      .getAll()
-      .then(setScripts)
-      .finally(() => setLoading(false))
-  }, [])
 
   async function handleSave(values: MySQLScriptInput) {
     try {
@@ -109,7 +105,7 @@ export function MySQLView() {
                 {scripts.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="table-empty">
-                      {loading ? 'Cargando…' : 'No hay scripts registrados — usa "Nueva" para agregar el primero.'}
+                      No hay scripts registrados — usa "Nueva" para agregar el primero.
                     </td>
                   </tr>
                 ) : (

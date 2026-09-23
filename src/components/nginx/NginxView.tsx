@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SiNginx, SiNginxHex } from '@icons-pack/react-simple-icons'
 import type { NginxServer, NginxServerInput } from '../../../electron/shared/http-servers/nginx'
 import { useToast } from '../../contexts/ToastContext'
@@ -10,21 +10,17 @@ import { NginxShowModal } from './NginxShowModal'
 
 type FormState = { mode: 'create' } | { mode: 'edit'; server: NginxServer }
 
-export function NginxView() {
+interface NginxViewProps {
+  initialServers: NginxServer[]
+}
+
+export function NginxView({ initialServers }: NginxViewProps) {
   const { showToast } = useToast()
-  const [servers, setServers] = useState<NginxServer[]>([])
-  const [loading, setLoading] = useState(true)
+  const [servers, setServers] = useState<NginxServer[]>(initialServers)
   const [formState, setFormState] = useState<FormState | null>(null)
   const [showServer, setShowServer] = useState<NginxServer | null>(null)
   const [confServer, setConfServer] = useState<NginxServer | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<NginxServer | null>(null)
-
-  useEffect(() => {
-    window.sysBootstrapper.nginx
-      .getAll()
-      .then(setServers)
-      .finally(() => setLoading(false))
-  }, [])
 
   async function handleSave(values: NginxServerInput) {
     try {
@@ -111,7 +107,7 @@ export function NginxView() {
                 {servers.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="table-empty">
-                      {loading ? 'Cargando…' : 'No hay configuraciones registradas — usa "Nueva" para agregar la primera.'}
+                      No hay configuraciones registradas — usa "Nueva" para agregar la primera.
                     </td>
                   </tr>
                 ) : (
